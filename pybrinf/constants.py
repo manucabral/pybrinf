@@ -1,11 +1,21 @@
-from pybrinf.exceptions import BrowserNotDetected
+from pybrinf.exceptions import BrowserNotFound
 
 '''
-    Contants values for PyBrinf.
-    TODO: Add more browsers and linux / macos support.
+Contants values for PyBrinf.
+TODO: Add more browsers and linux / macos support.
 '''
 class Constants:
+    '''
+        Constants class for PyBrinf.
+    '''
     DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
+
+    DOWNLOADS_QUERY = '''
+SELECT total_bytes, current_path, start_time, end_time, tab_url, url
+FROM downloads
+LEFT JOIN downloads_url_chains
+ON downloads.id = downloads_url_chains.id
+'''
 
     BROWSERS = [
         {
@@ -45,6 +55,17 @@ class Constants:
     ]
 
     @staticmethod
+    def download_query(**kwargs) -> str:
+        '''
+        Get the query for downloads.
+        TODO: Implement limit, offset, and filters.
+
+        Returns:
+            str: The query for downloads.
+        '''
+        return Constants.DOWNLOADS_QUERY
+
+    @staticmethod
     def get_browser_data(name: str) -> dict:
         '''
         Get the data of a browser.
@@ -56,6 +77,6 @@ class Constants:
             dict: The data of the browser.
         '''
         for browser in Constants.BROWSERS:
-            if browser.get('name') == name:
+            if browser.get('name').lower() == name.lower():
                 return browser
-        raise BrowserNotDetected()
+        raise BrowserNotFound()
