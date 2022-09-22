@@ -1,12 +1,16 @@
 import re
 import os
 import subprocess
+
+from pybrinf.item import DownloadedItem
+from pybrinf.database import Database
+from pybrinf.constants import Constants
 from pybrinf.exceptions import BrowserNotInstalled
 
 '''
-    Browser implementation for PyBrinf.
-    This module is used to simulate a simple browser.
-    Docstrings are written in Google style.
+Browser implementation for PyBrinf.
+This module is used to simulate a simple browser.
+Docstrings are written in Google style.
 '''
 
 class Browser:
@@ -35,6 +39,7 @@ class Browser:
         self.__progid = kwargs.get('progid', None)
         self.__process = kwargs.get('process', None)
         self.__chromium = kwargs.get('chromium', None)
+        self.__version = kwargs.get('version', None)
 
     def __str__(self):
         '''Get the string representation of the browser.'''
@@ -48,6 +53,22 @@ class Browser:
         '''Compare the browser with another browser.'''
         return self.name == other.name and self.process == other.process
 
+    @property
+    def __history(self) -> Database:
+        '''
+        Get the history database of the browser.
+
+        Raises:
+            BrowserNotInstalled: If the browser is not installed.
+
+        Returns:
+            Database: The history database of the browser.
+        '''
+        if not self.installed:
+            raise BrowserNotInstalled()
+        path = self.path + '\\History'
+        return Database(path, bypass=True, to=os.environ.get('TEMP'))
+    
     @property
     def name(self) -> str:
         '''Get the name of the browser.'''
@@ -78,7 +99,7 @@ class Browser:
             return self.__app_path.replace(base, os.environ.get(base))
         except:
            return ''
-        
+    
     @property
     def installed(self) -> bool:
         '''
@@ -89,6 +110,27 @@ class Browser:
         '''
         return os.path.exists(self.app_path)
     
+    @property
+    def downloads(self) -> list:
+        '''
+        Get the list of downloaded items from the browser.
+
+        Raises:
+            BrowserNotInstalled: If the browser is not installed.
+        
+        Returns:
+            list(DownloadedItem): The list of downloaded items.
+        '''
+        if not self.installed:
+            raise BrowserNotInstalled()
+        db_history = self.__history
+        db_history.connect()
+        result = db_history.execute(Constants.DOWNLOADS_QUERY)
+        downloads = [DownloadedItem(*download) for download in result]
+        db_history.close()
+        return downloads
+
+
     def open(self, url: str) -> True:
         '''
         Open the url in the browser.
@@ -105,4 +147,4 @@ class Browser:
         if not self.installed:
             raise BrowserNotInstalled()
         subprocess.Popen([self.app_path, url])
-        
+    
