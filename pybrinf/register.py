@@ -1,21 +1,30 @@
 import winreg
 
+'''
+    Register implementation for PyBrinf
+    This module uses winreg to read the registry.
+    Docstrings are written in Google style.
+'''
+
 class Register:
-    '''
-    Register class, used to read and write to the windows registry.
-    '''
+    '''Register class core'''
 
     def openkey(self, key: str, subkey: str, access: int = winreg.KEY_ALL_ACCESS) -> winreg.HKEYType:
         '''
         Open a registry key.
 
-        params:
-            key: The key to open.
-            subkey: The subkey to open.
-            access: The access mode to use. Default is KEY_ALL_ACCESS.
-                Note: If you change it may cause errors on some functions.
-        returns:
-            The opened key.
+        Args:
+            key (str): The key to open.
+            subkey (str): The subkey to open.
+            access (int): The access to the key. Defaults to winreg.KEY_ALL_ACCESS.
+
+        Raises:
+            FileNotFoundError: The key does not exist.
+            PermissionError: The access is denied.
+            Exception: An unknown error occurred.
+        
+        Returns:
+            winreg.HKEYType: The opened key.
         '''
         try:
             return winreg.OpenKey(key, subkey, 0, access)
@@ -30,11 +39,16 @@ class Register:
         '''
         Extract a value from a registry key.
 
-        params:
-            key: The key to extract from.
-            value: The value to extract.
-        returns:
-            The extracted value.
+        Args:
+            key (winreg.HKEYType): The key to extract the value from.
+            value (str): The value to extract.
+        
+        Raises:
+            FileNotFoundError: The value does not exist.
+            Exception: An unknown error occurred.
+        
+        Returns:
+            str: The extracted value.
         '''
         try:
             return winreg.QueryValueEx(key, value)[0]

@@ -4,11 +4,16 @@ from pybrinf.register import Register
 from pybrinf.constants import Constants
 from pybrinf.exceptions import *
 
-from re import search, IGNORECASE
-from winreg import HKEY_CURRENT_USER, KEY_READ
+import re
+import winreg
+
+'''
+    Main class of PyBrinf.
+    Brinf is a class that allows you to get information about the browser.
+'''
 
 class Brinf:
-    '''Core for the Brinf module.'''
+    '''Main class for PyBrinf.'''
     __initialize = False
 
     def __init__(self):
@@ -16,52 +21,65 @@ class Brinf:
         self.__register = Register()
         self.__constants = Constants()
     
-    def init(self):
+    def init(self) -> None:
         '''
         This method must be called before using any other methods 
         because it detects the default browser.
+
+        Raises:
+            BrowserNotFound: The default browser could not be found.
         '''
         key = self.__progid
         if key:
             self.browser = Browser(**self.__detect_browser(key))
             self.__initialize = True
         else:
-            raise BrowserNotDetected()
+            raise BrowserNotFound()
 
     @property
     def default_browser(self) -> Browser:
         '''
         Get the default browser of the system.
 
-        returns:
-            The default browser.
+        Returns:
+            browser: The default browser of the system.
         '''
         if not self.__initialize:
             raise BrinfNotInitialized()
         return self.browser
 
     @property
-    def __progid(self):
+    def __progid(self) -> str:
         '''
-        Get the progid of the default browser.
+        Get the progid value from the registry.
 
-        returns:
-            The progid of the default browser.
+        Raises:
+            FileNotFoundError: The registry key could not be found.
+        
+        Returns:
+            str: The progid value of the default browser.
+            
         '''
-        key = self.__register.openkey(HKEY_CURRENT_USER, self.__constants.DEFAULT_BROWSER_KEY)
-        return self.__register.extract(key, 'ProgId')
+        try:
+            key = self.__register.openkey(winreg.HKEY_CURRENT_USER, self.__constants.DEFAULT_BROWSER_KEY)
+            return self.__register.extract(key, 'ProgId')
+        except FileNotFoundError:
+            return None
 
     def __detect_browser(self, progid: str) -> dict:
         '''
         Detect the browser from the progid.
 
-        params:
-            progid: The progid to detect the browser from.
+        Args:
+            progid (str): The progid of the browser.
         
-        returns:
-            The detected browser.
+        Raises:
+            BrowserNotDetected: The browser could not be detected.
+
+        Returns:
+            dict: The browser information.
         '''
         for browser in self.__constants.BROWSERS:
-            if search(browser.get('name'), progid, IGNORECASE):
+            if re.search(browser.get('name'), progid, re.IGNORECASE):
                 return browser
         raise BrowserNotDetected()

@@ -8,6 +8,10 @@ class BrowserNotDetected(Exception):
     def __init__(self):
         super().__init__('The browser could not be detected.')
 
+class BrowserNotFound(Exception):
+    '''This exception is raised when the browser is not found.'''
+    def __init__(self):
+        super().__init__('The browser could not be found.')
 class InvalidBrowser(Exception):
     '''This exception is raised when the browser is invalid.'''
     def __init__(self):

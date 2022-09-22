@@ -3,22 +3,42 @@ import os
 import subprocess
 from pybrinf.exceptions import BrowserNotInstalled
 
+'''
+    Browser implementation for PyBrinf.
+    This module is used to simulate a simple browser.
+    Docstrings are written in Google style.
+'''
+
 class Browser:
-    '''Core for the browser module.'''
+    '''
+        Browser class core.
+
+        Args:
+            **kwargs: The keyword arguments to initialize the browser.
+        
+        Attributes:
+            name (str): The name of the browser.
+            fullname (str): The full name of the browser.
+            app_path (str): The path of the browser executable.
+            local_path (str): The path of the browser local data.
+            process (str): The process name of the browser.
+            progid (str): The progid of the browser.
+            chromium (bool): Whether the browser is a chromium based browser.
+    '''
 
     def __init__(self, **kwargs):
         '''Initialize the Browser instance.'''
         self.__name = kwargs.get('name', None)
-        self.__process = kwargs.get('process', None)
         self.__fullname = kwargs.get('fullname', None)
         self.__app_path = kwargs.get('app_path', None)
         self.__local_path = kwargs.get('local_path', None)
         self.__progid = kwargs.get('progid', None)
+        self.__process = kwargs.get('process', None)
         self.__chromium = kwargs.get('chromium', None)
 
     def __str__(self):
         '''Get the string representation of the browser.'''
-        return f'<brinf.__main__.Browser name={self.name} process={self.process}>'
+        return str(self.__class__)
     
     def __repr__(self):
         '''Get the string representation of the browser.'''
@@ -27,11 +47,6 @@ class Browser:
     def __eq__(self, other: object) -> bool:
         '''Compare the browser with another browser.'''
         return self.name == other.name and self.process == other.process
-
-    @property
-    def installed(self) -> bool:
-        '''Check if the browser is installed.'''
-        return os.path.exists(self.app_path)
 
     @property
     def name(self) -> str:
@@ -64,8 +79,29 @@ class Browser:
         except:
            return ''
         
-    def open(self, url: str) -> None:
-        '''Open the url in the browser.'''
+    @property
+    def installed(self) -> bool:
+        '''
+        Check if the browser is installed.
+
+        Returns:
+            bool: True if the browser is installed, False otherwise.
+        '''
+        return os.path.exists(self.app_path)
+    
+    def open(self, url: str) -> True:
+        '''
+        Open the url in the browser.
+
+        Args:
+            url (str): The url to open.
+        
+        Raises:
+            BrowserNotInstalled: If the browser is not installed.
+        
+        Returns:
+            bool: True if the browser is opened, False otherwise.
+        '''
         if not self.installed:
             raise BrowserNotInstalled()
         subprocess.Popen([self.app_path, url])

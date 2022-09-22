@@ -1,5 +1,9 @@
 from pybrinf.exceptions import BrowserNotDetected
 
+'''
+    Contants values for PyBrinf.
+    TODO: Add more browsers and linux / macos support.
+'''
 class Constants:
     DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
 
@@ -45,11 +49,11 @@ class Constants:
         '''
         Get the data of a browser.
 
-        params:
-            name: The name of the browser to get.
-
-        returns:
-            The browser.
+        Args:
+            name (str): The name of the browser.
+        
+        Returns:
+            dict: The data of the browser.
         '''
         for browser in Constants.BROWSERS:
             if browser.get('name') == name:
