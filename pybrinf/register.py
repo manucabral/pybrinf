@@ -1,9 +1,9 @@
 import winreg
 
 '''
-    Register implementation for PyBrinf
-    This module uses winreg to read the registry.
-    Docstrings are written in Google style.
+Register implementation for PyBrinf.
+This module uses winreg to read the registry.
+Docstrings are written in Google style.
 '''
 
 class Register:
