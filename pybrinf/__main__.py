@@ -1,15 +1,17 @@
 
-from pybrinf.browser import Browser
-from pybrinf.register import Register
-from pybrinf.constants import Constants
-from pybrinf.exceptions import *
-
 import re
 import winreg
+
+from pybrinf.browser import Browser
+from pybrinf.register import Register
+from pybrinf.database import Database
+from pybrinf.constants import Constants
+from pybrinf.exceptions import *
 
 '''
     Main class of PyBrinf.
     Brinf is a class that allows you to get information about the browser.
+    Docstrings are written in Google style.
 '''
 
 class Brinf:
@@ -20,33 +22,6 @@ class Brinf:
         '''Initialize the Brinf instance.'''
         self.__register = Register()
         self.__constants = Constants()
-    
-    def init(self) -> None:
-        '''
-        This method must be called before using any other methods 
-        because it detects the default browser.
-
-        Raises:
-            BrowserNotFound: The default browser could not be found.
-        '''
-        key = self.__progid
-        if key:
-            self.browser = Browser(**self.__detect_browser(key))
-            self.__initialize = True
-        else:
-            raise BrowserNotFound()
-
-    @property
-    def default_browser(self) -> Browser:
-        '''
-        Get the default browser of the system.
-
-        Returns:
-            browser: The default browser of the system.
-        '''
-        if not self.__initialize:
-            raise BrinfNotInitialized()
-        return self.browser
 
     @property
     def __progid(self) -> str:
@@ -83,3 +58,56 @@ class Brinf:
             if re.search(browser.get('name'), progid, re.IGNORECASE):
                 return browser
         raise BrowserNotDetected()
+        
+
+    def init(self) -> None:
+        '''
+        This method must be called before using any other methods 
+        because it detects the default browser.
+
+        Raises:
+            BrowserNotFound: The default browser could not be found.
+        '''
+        key = self.__progid
+        if key:
+            self.__browser = Browser(**self.__detect_browser(key))
+            self.__initialize = True
+        else:
+            raise BrowserNotFound()
+
+    @property
+    def default_browser(self) -> Browser:
+        '''
+        Get the default browser instance.
+
+        Raises:
+            BrinfNotInitialized: The Brinf instance is not initialized.
+        
+        Returns:
+            browser: The default browser of the system.
+        '''
+        if not self.__initialize:
+            raise BrinfNotInitialized()
+        return self.__browser
+    
+    def browser(self, name: str) -> Browser:
+        '''
+        Get a browser instance from the name.
+        If the browser is not installed, it will raise an exception.
+
+        Args:
+            name (str): The name of the browser.
+        
+        Raises:
+            BrowserNotFound: The browser could not be found.
+
+        Returns:
+            browser: The browser.
+        '''
+        if not self.__initialize:
+            raise BrinfNotInitialized()
+        try:
+            data = self.__constants.get_browser_data(name)
+            return Browser(**data)
+        except BrowserNotFound:
+            raise BrowserNotFound()
