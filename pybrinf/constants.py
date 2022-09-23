@@ -9,13 +9,7 @@ class Constants:
 
     DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
     SUPPORTED_SYSTEMS = ['Windows']
-
-    DOWNLOADS_QUERY = '''
-SELECT total_bytes, current_path, start_time, end_time, tab_url, url
-FROM downloads
-LEFT JOIN downloads_url_chains
-ON downloads.id = downloads_url_chains.id
-'''
+    SEARCH_PROCESS = 'WMIC PROCESS WHERE "name=\'{}\'" GET ExecutablePath'
 
     BROWSERS = [
         {
@@ -53,6 +47,13 @@ ON downloads.id = downloads_url_chains.id
             'local_path': 'LOCALAPPDATA\\Yandex\\YandexBrowser\\User Data\\Default'
         }
     ]
+
+    DOWNLOADS_QUERY = '''
+SELECT total_bytes, current_path, start_time, end_time, tab_url, url
+FROM downloads
+LEFT JOIN downloads_url_chains
+ON downloads.id = downloads_url_chains.id
+'''
 
     @staticmethod
     def download_query(**kwargs) -> str:

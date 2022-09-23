@@ -109,7 +109,7 @@ class Browser:
             bool: True if the browser is installed, False otherwise.
         '''
         return os.path.exists(self.app_path)
-    
+
     @property
     def downloads(self) -> list:
         '''
@@ -130,6 +130,18 @@ class Browser:
         db_history.close()
         return downloads
 
+    @property
+    def running(self) -> bool:
+        '''
+        Check if the browser is running.
+
+        Returns:
+            bool: True if the browser is running, False otherwise.
+        '''
+        query = Constants.SEARCH_PROCESS.format(self.process)
+        res = subprocess.check_output(query, stderr=subprocess.PIPE).decode()
+        return bool(re.search(self.name, res))
+        
 
     def open(self, url: str) -> True:
         '''
