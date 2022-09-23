@@ -47,6 +47,7 @@ class Database:
             self.__conn.close()
             self.__conn = None
             self.__c = None
+            os.system(f'del "{self.__path}"')
 
     def connect(self) -> None:
         '''
