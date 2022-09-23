@@ -2,7 +2,7 @@ import re
 import os
 import subprocess
 
-from pybrinf.item import DownloadedItem
+from pybrinf.item import Downloaded, History
 from pybrinf.database import Database
 from pybrinf.constants import Constants
 from pybrinf.exceptions import BrowserNotInstalled
@@ -111,26 +111,6 @@ class Browser:
         return os.path.exists(self.app_path)
 
     @property
-    def downloads(self) -> list:
-        '''
-        Get the list of downloaded items from the browser.
-
-        Raises:
-            BrowserNotInstalled: If the browser is not installed.
-        
-        Returns:
-            list(DownloadedItem): The list of downloaded items.
-        '''
-        if not self.installed:
-            raise BrowserNotInstalled()
-        db_history = self.__history
-        db_history.connect()
-        result = db_history.execute(Constants.DOWNLOADS_QUERY)
-        downloads = [DownloadedItem(*download) for download in result]
-        db_history.close()
-        return downloads
-
-    @property
     def running(self) -> bool:
         '''
         Check if the browser is running.
@@ -160,3 +140,47 @@ class Browser:
             raise BrowserNotInstalled()
         subprocess.Popen([self.app_path, url])
     
+    def downloads(self, **kwargs) -> list:
+        '''
+        Get the list of downloaded items from the browser.
+
+        Args:
+            limit (int): The limit of the items to get. Default is 10.
+            offset (int): The offset of the items to get. Default is 0.
+        
+        Raises:
+            BrowserNotInstalled: If the browser is not installed.
+        
+        Returns:
+            list(DownloadedItem): The list of downloaded items.
+        '''
+        if not self.installed:
+            raise BrowserNotInstalled()
+        db_history = self.__history
+        db_history.connect()
+        result = db_history.execute(Constants.download_query(**kwargs))
+        downloads = [Downloaded(*download) for download in result]
+        db_history.close()
+        return downloads
+    
+    def history(self, **kwargs) -> list:
+        '''
+        Get the history of the browser.
+
+        Args:
+            limit (int): The limit of the items to get. Default is 10.
+            offset (int): The offset of the items to get. Default is 0.
+
+        Raises:
+            BrowserNotInstalled: If the browser is not installed.
+
+        Returns:
+            list: The history of the browser.
+        '''
+        if not self.installed:
+            raise BrowserNotInstalled()
+        db_history = self.__history
+        db_history.connect()
+        result = db_history.execute(Constants.history_query(**kwargs))
+        history = [History(*history) for history in result]
+        return history
