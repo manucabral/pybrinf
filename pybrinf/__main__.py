@@ -1,6 +1,7 @@
 
 import re
 import winreg
+import platform
 
 from pybrinf.browser import Browser
 from pybrinf.register import Register
@@ -17,6 +18,7 @@ from pybrinf.exceptions import *
 class Brinf:
     '''Main class for PyBrinf.'''
     __initialize = False
+    __os = 'Unknown'
 
     def __init__(self):
         '''Initialize the Brinf instance.'''
@@ -62,12 +64,15 @@ class Brinf:
 
     def init(self) -> None:
         '''
-        This method must be called before using any other methods 
-        because it detects the default browser.
+        This method must be called before using any other methods of the class.
 
         Raises:
+            SystemNotSupported: The system is not supported.
             BrowserNotFound: The default browser could not be found.
         '''
+        self.__os = platform.system()
+        if not self.__os in Constants.SUPPORTED_SYSTEMS:
+            raise SystemNotSupported(self.__os)
         key = self.__progid
         if key:
             self.__browser = Browser(**self.__detect_browser(key))
