@@ -1,5 +1,12 @@
 '''This module contains all the exceptions used in PyBrinf.'''
 
+class SystemNotSupported(Exception):
+    '''The system is not supported.'''
+    def __init__(self, system: str):
+        '''Initialize the exception.'''
+        self.system = system
+        super().__init__(f'The system {system} is not supported. Sorry.')
+
 class BrinfNotInitialized(Exception):
     '''This exception is raised when the Brinf class is not initialized.'''
     def __init__(self):
