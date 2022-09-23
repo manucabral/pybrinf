@@ -5,10 +5,10 @@ Contants values for PyBrinf.
 TODO: Add more browsers and linux / macos support.
 '''
 class Constants:
-    '''
-        Constants class for PyBrinf.
-    '''
+    '''Constants class for PyBrinf.'''
+
     DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
+    SUPPORTED_SYSTEMS = ['Windows']
 
     DOWNLOADS_QUERY = '''
 SELECT total_bytes, current_path, start_time, end_time, tab_url, url
