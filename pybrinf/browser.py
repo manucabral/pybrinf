@@ -5,7 +5,7 @@ import subprocess
 from pybrinf.item import Downloaded, History
 from pybrinf.database import Database
 from pybrinf.constants import Constants
-from pybrinf.exceptions import BrowserNotInstalled
+from pybrinf.exceptions import BrowserNotInstalled, BrowserNotRunning
 
 '''
 Browser implementation for PyBrinf.
@@ -121,7 +121,30 @@ class Browser:
         query = Constants.SEARCH_PROCESS.format(self.process)
         res = subprocess.check_output(query, stderr=subprocess.PIPE).decode()
         return bool(re.search(self.name, res))
-        
+    
+    @property
+    def current_website(self):
+        '''
+        Get the current tab title of the browser.
+        NOTE: If you rename the window browser, the title will be the new name.
+
+        Raises:
+            BrowserNotInstalled: If the browser is not installed.
+
+        Returns:
+            str: The current website of the browser.
+        '''
+        if not self.installed:
+            raise BrowserNotInstalled()
+        if not self.running:
+            raise BrowserNotRunning()
+        query = Constants.SEARCH_TITLE.format(self.process)
+        res = subprocess.check_output(query, stderr=subprocess.PIPE).decode('unicode_escape')
+        # TODO: Implement history db parsing
+        for line in res.splitlines():
+            if 'Window Title:' in line:
+                return line.split('Window Title:')[1].strip()
+        return ''
 
     def open(self, url: str) -> True:
         '''
@@ -140,7 +163,27 @@ class Browser:
             raise BrowserNotInstalled()
         subprocess.Popen([self.app_path, url])
     
-    def downloads(self, **kwargs) -> list:
+    def close(self) -> True:
+        '''
+        Close the browser.
+
+        Raises:
+            BrowserNotInstalled: If the browser is not installed.
+        
+        Returns:
+            bool: True if the browser is closed, False otherwise.
+        '''
+        if not self.installed:
+            raise BrowserNotInstalled()
+        query = Constants.KILL_PROCESS.format(self.process)
+        try:
+            p = subprocess.Popen(query, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            return bool(not err and out)
+        except:
+            raise Exception('Unknown error while closing the browser.')
+    
+    def downloads(self, **kwargs) -> [Downloaded]:
         '''
         Get the list of downloaded items from the browser.
 
@@ -152,7 +195,7 @@ class Browser:
             BrowserNotInstalled: If the browser is not installed.
         
         Returns:
-            list(DownloadedItem): The list of downloaded items.
+            list(Downloaded): The list of downloaded items.
         '''
         if not self.installed:
             raise BrowserNotInstalled()
@@ -163,9 +206,9 @@ class Browser:
         db_history.close()
         return downloads
     
-    def history(self, **kwargs) -> list:
+    def websites(self, **kwargs) -> [History]:
         '''
-        Get the history of the browser.
+        Get the list of visited websites from the browser.
 
         Args:
             limit (int): The limit of the items to get. Default is 10.
@@ -181,6 +224,8 @@ class Browser:
             raise BrowserNotInstalled()
         db_history = self.__history
         db_history.connect()
-        result = db_history.execute(Constants.history_query(**kwargs))
+        result = db_history.execute(Constants.website_query(**kwargs))
         history = [History(*history) for history in result]
+        db_history.close()
         return history
+    
