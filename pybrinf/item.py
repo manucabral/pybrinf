@@ -1,3 +1,4 @@
+import os
 
 '''
 This module contains the Item class.
@@ -13,6 +14,15 @@ class Item:
     def __repr__(self):
         '''Get the string representation of the object.'''
         return self.__str__()
+    
+    def __eq__(self, other: object) -> bool:
+        '''Compare the item with another item.'''
+        pass
+
+    def open(self) -> None:
+        '''Open the item.'''
+        pass
+
 class Downloaded(Item):
     '''Simulates a downloaded item.'''
     def __init__(self,
@@ -30,6 +40,16 @@ class Downloaded(Item):
         self.url = url
         self.tab_url = tab_url
     
+    def __eq__(self, other: object) -> bool:
+        '''Compare the downloaded item with another downloaded item.'''
+        return self.url == other.url and self.path == other.path
+    
+    def open(self) -> None:
+        '''Open the downloaded item directory.'''
+        try:
+            os.startfile(self.path.replace(self.path.split('\\')[-1], ''))
+        except:
+            pass
 class History(Item):
     '''Simulates a history item.'''
     def __init__(self,
