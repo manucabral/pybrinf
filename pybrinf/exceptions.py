@@ -31,6 +31,10 @@ class BrowserNotInstalled(Exception):
     def __init__(self):
         super().__init__('The browser is not installed.')
 
+class BrowserNotRunning(Exception):
+    '''This exception is raised when the browser is not running.'''
+    def __init__(self):
+        super().__init__('The browser is not running.')
 class FailedToConnect(Exception):
     '''This exception is raised when the database could not be connected.'''
     def __init__(self):
