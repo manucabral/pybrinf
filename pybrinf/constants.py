@@ -11,8 +11,10 @@ class Constants:
     DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
     SUPPORTED_SYSTEMS = ['Windows']
     SUPPORTED_BROWSERS = ['chrome', 'edge', 'yandex']
+    KILL_PROCESS = 'taskkill /f /im {}'
     SEARCH_PROCESS = 'WMIC PROCESS WHERE "name=\'{}\'" GET ExecutablePath'
-
+    SEARCH_TITLE = 'tasklist /fi "imagename eq {}" /fo list /v'
+    #tasklist /fi "imagename eq browser.exe" /fo list /v | find /i "Window Title:"
     BROWSERS = [
         {
             'name': 'Chrome',
@@ -50,7 +52,7 @@ class Constants:
         }
     ]
 
-    HISTORY_QUERY = '''
+    WEBSITE_QUERY = '''
 SELECT url, title, visit_count, last_visit_time
 FROM urls
 ORDER BY last_visit_time DESC
@@ -81,7 +83,7 @@ ORDER BY start_time DESC
         return query
 
     @staticmethod
-    def history_query(**kwargs) -> str:
+    def website_query(**kwargs) -> str:
         '''
         Get the history query with the given parameters.
 
@@ -92,7 +94,7 @@ ORDER BY start_time DESC
         Returns:
             str: The history query.
         '''
-        return Constants.set_filter(Constants.HISTORY_QUERY, **kwargs)
+        return Constants.set_filter(Constants.WEBSITE_QUERY, **kwargs)
 
     @staticmethod
     def download_query(**kwargs) -> str:
