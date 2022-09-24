@@ -18,6 +18,7 @@ class Database:
     def __init__(self, path: str, **kwargs):
         '''Initialize the Database instance.'''
         self.__path = path
+        self.__shutil = kwargs.get('shutil', False)
         if kwargs.get('bypass', False):
             # If bypass is true, the database will be copied to a temporary directory.
             to = kwargs.get('to', None)
@@ -32,7 +33,12 @@ class Database:
             FailedToCopyDatabase: If the database cannot be copied.
         '''
         try:
-            os.system(f'copy "{from_path}" "{to_path}"> nul')
+            if self.__shutil:
+                # copy large firefox path
+                import shutil
+                shutil.copy(from_path, to_path)
+            else:
+                os.system(f'copy "{from_path}" "{to_path}">nul')
         except:
             raise FailedToCopyDatabase()
 

@@ -30,7 +30,8 @@ class Constants:
             'process': 'firefox.exe',
             'progid': 'FirefoxHTML',
             'chromium': False,
-            'local_path': '\\Mozilla\\Firefox\\Profiles\\'
+            'app_path': 'ProgramFiles\\Mozilla Firefox\\firefox.exe',
+            'local_path': 'APPDATA\\Mozilla\\Firefox'
         },
         {
             'name': 'Edge',
@@ -52,10 +53,17 @@ class Constants:
         }
     ]
 
+    # TODO: join mozilla and chrome queries
+
     WEBSITE_QUERY = '''
 SELECT url, title, visit_count, last_visit_time
 FROM urls
 ORDER BY last_visit_time DESC
+'''
+    MOZ_WEBSITE_QUERY = '''
+SELECT url, title, visit_count, last_visit_date
+from moz_places
+ORDER BY last_visit_date DESC
 '''
 
     DOWNLOAD_QUERY = '''
@@ -64,6 +72,13 @@ FROM downloads
 LEFT JOIN downloads_url_chains
 ON downloads.id = downloads_url_chains.id
 ORDER BY start_time DESC
+'''
+
+    MOZ_DOWNLOAD_QUERY = '''
+SELECT 0 as total_bytes, content as current_path, dateAdded as start_time,
+lastModified as end_time, url, url as tab_url
+FROM moz_annos, moz_places
+WHERE moz_annos.place_id == moz_places.id
 '''
 
     @staticmethod
@@ -83,32 +98,36 @@ ORDER BY start_time DESC
         return query
 
     @staticmethod
-    def website_query(**kwargs) -> str:
+    def website_query(chromium: bool, **kwargs) -> str:
         '''
         Get the history query with the given parameters.
 
         Args:
+            chromium (bool): If the browser is chromium based.
             limit (int): The limit of the items to get. 
             offset (int): The offset of the items to get.
 
         Returns:
             str: The history query.
         '''
-        return Constants.set_filter(Constants.WEBSITE_QUERY, **kwargs)
+        query = Constants.WEBSITE_QUERY if chromium else Constants.MOZ_WEBSITE_QUERY
+        return Constants.set_filter(query, **kwargs)
 
     @staticmethod
-    def download_query(**kwargs) -> str:
+    def download_query(chromium: bool, **kwargs) -> str:
         '''
         Get the query for downloads.
 
         Args:
+            chromium (bool): If the browser is chromium based.
             limit (int): The limit of the items to get.
             offset (int): The offset of the items to get.
         
         Returns:
             str: The query for downloads.
         '''
-        return Constants.set_filter(Constants.DOWNLOAD_QUERY, **kwargs)
+        query = Constants.DOWNLOAD_QUERY if chromium else Constants.MOZ_DOWNLOAD_QUERY
+        return Constants.set_filter(query, **kwargs)
 
     @staticmethod
     def get_browser_data(name: str) -> dict:
@@ -122,6 +141,6 @@ ORDER BY start_time DESC
             dict: The data of the browser.
         '''
         for browser in Constants.BROWSERS:
-            if browser.get('name').lower() == name.lower():
+            if browser['name'].lower() == name.lower():
                 return browser
         raise BrowserNotFound()

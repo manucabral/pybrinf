@@ -66,8 +66,14 @@ class Browser:
         '''
         if not self.installed:
             raise BrowserNotInstalled()
-        path = self.path + '\\History'
-        return Database(path, bypass=True, to=os.environ.get('TEMP'))
+        file = 'History' if self.__chromium else 'places.sqlite'
+        path = self.path + '\\' + file
+        return Database(
+            path= path, 
+            bypass= True, 
+            to= os.environ.get('TEMP'), 
+            shutil= not self.__chromium
+        )
     
     @property
     def name(self) -> str:
@@ -87,9 +93,19 @@ class Browser:
     @property
     def path(self) -> str:
         '''Get the full path of the browser.'''
+        base = self.__local_path.split('\\')[0]
+        path = self.__local_path.replace(base, os.environ.get(base))
         if self.__chromium:
-            base = self.__local_path.split('\\')[0]
-            return self.__local_path.replace(base, os.environ.get(base))
+            return path
+        else:
+            # for now only firefox is supported
+            try:
+                with open(f'{path}\\profiles.ini', 'r') as file:
+                    profile = file.readlines()[1].split('=')[1]
+                    path += "\\Profiles\\" + profile.split('/')[1].strip()
+            except:
+                raise Exception('Unknown error while getting the profile path.')
+        return path
     
     @property
     def app_path(self) -> str:
@@ -199,9 +215,10 @@ class Browser:
         '''
         if not self.installed:
             raise BrowserNotInstalled()
+
         db_history = self.__history
         db_history.connect()
-        result = db_history.execute(Constants.download_query(**kwargs))
+        result = db_history.execute(Constants.download_query(self.__chromium, **kwargs))
         downloads = [Downloaded(*download) for download in result]
         db_history.close()
         return downloads
@@ -224,7 +241,7 @@ class Browser:
             raise BrowserNotInstalled()
         db_history = self.__history
         db_history.connect()
-        result = db_history.execute(Constants.website_query(**kwargs))
+        result = db_history.execute(Constants.website_query(self.__chromium, **kwargs))
         history = [History(*history) for history in result]
         db_history.close()
         return history
