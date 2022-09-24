@@ -4,46 +4,51 @@ A lightweight, zero dependencies and free Python library for handling browser in
 
 This project is just started, currently in development!
 
-### Usage
+### Installation
 PyPI package is not available yet, but clone it.
 ```bash
 git clone https://github.com/manucabral/pybrinf.git
 ```
 
-### Example
+### Usage
 Setting up
 ```py
 from pybrinf import Brinf
 
-# initializes
 brinf = Brinf()
 brinf.init()
-
-# use the default browser
-browser = brinf.default_browser
-print(browser.name)
-
-# use another installed browser
-edge = brinf.browser('edge')
-edge.open('www.google.com')
-edge.close()
 ```
-
-Downloads
+Open a url
+```py
+browser = brinf.default_browser
+browser.open('www.google.com')
+```
+Close the browser
+```py
+browser.close()
+```
+Get downloads
 
 ```py
 for download in browser.downloads():
     print(download.url)
 
-# you can filter
+# get last download and open it
 download = browser.downloads(limit=1)
-download.open()
+download[0].open()
 ```
 
-History
+Get websites history
 ```py
 for website in browser.websites():
     print(website.title)
+```
+Use another installed browser
+```py
+chrome = brinf.browser('chrome')
+firefox = brinf.browser('firefox')
+yandex = brinf.browser('yandex')
+edge = brinf.browser('edge')
 ```
 
 ### Constributions
