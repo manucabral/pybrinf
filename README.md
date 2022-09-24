@@ -1,11 +1,13 @@
 ## pybrinf
 
-A lightweight, zero dependencies and free Python library for handling browser information.
+A lightweight, zero dependencies and free Python library for extract browser information.
 
-This project is just started, currently in development!
+'Python Browser Information' allows you to extract, export or view basic information about your browser using the python language.
+
+This project is just started, currently in development.
 
 ### Installation
-PyPI package is not available yet, but clone it.
+PyPI package is not available yet, clone it.
 ```bash
 git clone https://github.com/manucabral/pybrinf.git
 ```
