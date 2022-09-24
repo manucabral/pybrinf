@@ -6,7 +6,7 @@ import platform
 from pybrinf.browser import Browser
 from pybrinf.register import Register
 from pybrinf.database import Database
-from pybrinf.constants import Constants
+from pybrinf.utilities import Utilities
 from pybrinf.exceptions import *
 
 '''
@@ -23,7 +23,7 @@ class Brinf:
     def __init__(self):
         '''Initialize the Brinf instance.'''
         self.__register = Register()
-        self.__constants = Constants()
+        self.__utils = Utilities()
 
     @property
     def __progid(self) -> str:
@@ -38,7 +38,7 @@ class Brinf:
             
         '''
         try:
-            key = self.__register.openkey(winreg.HKEY_CURRENT_USER, self.__constants.DEFAULT_BROWSER_KEY)
+            key = self.__register.openkey(winreg.HKEY_CURRENT_USER, self.__utils.DEFAULT_BROWSER_KEY)
             return self.__register.extract(key, 'ProgId')
         except FileNotFoundError:
             return None
@@ -56,7 +56,7 @@ class Brinf:
         Returns:
             dict: The browser information.
         '''
-        for browser in self.__constants.BROWSERS:
+        for browser in self.__utils.BROWSERS:
             if re.search(browser.get('name'), progid, re.IGNORECASE):
                 return browser
         raise BrowserNotDetected()
@@ -71,7 +71,7 @@ class Brinf:
             BrowserNotFound: The default browser could not be found.
         '''
         self.__os = platform.system()
-        if not self.__os in Constants.SUPPORTED_SYSTEMS:
+        if not self.__os in self.__utils.SUPPORTED_SYSTEMS:
             raise SystemNotSupported(self.__os)
         key = self.__progid
         if key:
@@ -112,7 +112,7 @@ class Brinf:
         if not self.__initialize:
             raise BrinfNotInitialized()
         try:
-            data = self.__constants.get_browser_data(name)
+            data = self.__utils.get_browser_data(name)
             return Browser(**data)
         except BrowserNotFound:
             raise BrowserNotFound()

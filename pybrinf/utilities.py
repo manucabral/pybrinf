@@ -8,13 +8,12 @@ from pybrinf.queries import (
 )
 
 '''
-Contants values for PyBrinf.
+This module contains all utility functions used in PyBrinf.
 TODO: Add more browsers and linux / macos support.
-TODO: Modify the constants to be more dynamic for future browsers support.
 '''
 
-class Constants:
-    '''Constants class for PyBrinf.'''
+class Utilities:
+    '''Utilities class for PyBrinf.'''
 
     BROWSERS = BROWSERS
     DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
@@ -54,7 +53,7 @@ class Constants:
             str: The history query.
         '''
         query = WEBSITE_QUERY if chromium else MOZ_WEBSITE_QUERY
-        return Constants.set_filter(query, **kwargs)
+        return Utilities.set_filter(query, **kwargs)
 
     @staticmethod
     def download_query(chromium: bool, **kwargs) -> str:
@@ -70,7 +69,7 @@ class Constants:
             str: The query for downloads.
         '''
         query = DOWNLOAD_QUERY if chromium else MOZ_DOWNLOAD_QUERY
-        return Constants.set_filter(query, **kwargs)
+        return Utilities.set_filter(query, **kwargs)
 
     @staticmethod
     def get_browser_data(name: str) -> dict:

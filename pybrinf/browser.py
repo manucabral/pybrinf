@@ -4,7 +4,7 @@ import subprocess
 
 from pybrinf.item import Downloaded, History
 from pybrinf.database import Database
-from pybrinf.constants import Constants
+from pybrinf.utilities import Utilities
 from pybrinf.exceptions import BrowserNotInstalled, BrowserNotRunning
 
 '''
@@ -154,7 +154,7 @@ class Browser:
             raise BrowserNotInstalled()
         if not self.running:
             raise BrowserNotRunning()
-        query = Constants.SEARCH_TITLE.format(self.process)
+        query = Utilities.SEARCH_TITLE.format(self.process)
         res = subprocess.check_output(query, stderr=subprocess.PIPE).decode('unicode_escape')
         # TODO: Implement history db parsing
         for line in res.splitlines():
@@ -191,7 +191,7 @@ class Browser:
         '''
         if not self.installed:
             raise BrowserNotInstalled()
-        query = Constants.KILL_PROCESS.format(self.process)
+        query = Utilities.KILL_PROCESS.format(self.process)
         try:
             p = subprocess.Popen(query, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
@@ -218,7 +218,7 @@ class Browser:
 
         db_history = self.__history
         db_history.connect()
-        result = db_history.execute(Constants.download_query(self.__chromium, **kwargs))
+        result = db_history.execute(Utilities.download_query(self.__chromium, **kwargs))
         downloads = [Downloaded(*download) for download in result]
         db_history.close()
         return downloads
@@ -241,7 +241,7 @@ class Browser:
             raise BrowserNotInstalled()
         db_history = self.__history
         db_history.connect()
-        result = db_history.execute(Constants.website_query(self.__chromium, **kwargs))
+        result = db_history.execute(Utilities.website_query(self.__chromium, **kwargs))
         history = [History(*history) for history in result]
         db_history.close()
         return history
