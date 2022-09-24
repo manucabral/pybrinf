@@ -10,7 +10,7 @@ class Constants:
 
     DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
     SUPPORTED_SYSTEMS = ['Windows']
-    SUPPORTED_BROWSERS = ['chrome', 'edge', 'yandex']
+    SUPPORTED_BROWSERS = ['chrome', 'edge', 'yandex', 'firefox']
     KILL_PROCESS = 'taskkill /f /im {}'
     SEARCH_PROCESS = 'WMIC PROCESS WHERE "name=\'{}\'" GET ExecutablePath'
     SEARCH_TITLE = 'tasklist /fi "imagename eq {}" /fo list /v'
