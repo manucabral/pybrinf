@@ -7,7 +7,7 @@ A lightweight, zero dependencies and free Python library for extract browser inf
 This project is just started, currently in development. Only supports **Windows**.
 
 ### Features
-- Supports [popular browsers]()
+- Supports [popular browsers](https://github.com/manucabral/pybrinf/wiki#supported-browsers)
 - Detects your default browser
 - Use any installed browser
 - Get downloads or history
