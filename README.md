@@ -4,7 +4,17 @@ A lightweight, zero dependencies and free Python library for extract browser inf
 
 'Python Browser Information' allows you to extract, export or view basic information about your browser using the python language.
 
-This project is just started, currently in development.
+This project is just started, currently in development. Only supports **Windows**.
+
+See full documentation [here]()
+
+### Features
+- Supports [popular browsers]()
+- Detects your default browser
+- Use any installed browser 
+- Get downloads or history
+- Open a website in any installed browser
+- Close an installed browser
 
 ### Installation
 PyPI package is not available yet, clone it.
@@ -39,7 +49,6 @@ for download in browser.downloads():
 download = browser.downloads(limit=1)
 download[0].open()
 ```
-
 Get websites history
 ```py
 for website in browser.websites():
