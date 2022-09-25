@@ -7,7 +7,8 @@ BROWSERS = [
         'process': 'chrome.exe',
         'progid': 'ChromeHTML',
         'chromium': True,
-        'local_path': '\\Google\\Chrome\\User Data\\Default'
+        'app_path': 'ProgramFiles\\Google\\Chrome\\Application\\chrome.exe',
+        'local_path': 'LOCALAPPDATA\\Google\\Chrome\\User Data\\Default'
     },
     {
         'name': 'Firefox',
