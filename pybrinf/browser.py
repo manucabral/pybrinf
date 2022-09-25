@@ -161,6 +161,26 @@ class Browser:
                 return line.split('Window Title:')[1].strip()
         return ''
 
+    def set_app_path(self, path: str) -> None:
+        '''
+        Set the app path of the browser.
+        IMPORTANT: This method is used when the browser is not in the default app path.
+
+        Args:
+            path (str): The path to define.
+        '''
+        self.__app_path = path
+    
+    def set_local_path(self, path: str) -> None:
+        '''
+        Set the local path of the browser.
+        IMPORTANT: This method is used when the browser is not in the default local path.
+
+        Args:
+            path (str): The path to define.
+        '''
+        self.__local_path = path
+
     def open(self, url: str) -> True:
         '''
         Open the url in the browser.
