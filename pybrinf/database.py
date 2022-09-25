@@ -1,4 +1,5 @@
 import sqlite3
+import shutil
 import sys
 import os
 
@@ -34,8 +35,8 @@ class Database:
         '''
         try:
             shutil.copy(from_path, to_path)
-        except:
-            raise FailedToCopyDatabase()
+        except Exception as e:
+            raise FailedToCopyDatabase(e)
 
     def __del__(self) -> None:
         '''When the Database instance is deleted, close the connection.'''
