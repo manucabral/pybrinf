@@ -20,10 +20,10 @@ class BrowserNotFound(Exception):
     '''This exception is raised when the browser is not found.'''
     def __init__(self):
         super().__init__('The browser could not be found.')
-class InvalidBrowser(Exception):
-    '''This exception is raised when the browser is invalid.'''
-    def __init__(self):
-        super().__init__('The browser instance is invalid.')
+class BrowserNotSupported(Exception):
+    '''This exception is raised when the browser is not supported.'''
+    def __init__(self, browser: str):
+        super().__init__(f'The browser {browser} is not supported. Please check the propertie supported_browsers.')
 
 class BrowserNotInstalled(Exception):
     '''This exception is raised when the browser is not installed.'''

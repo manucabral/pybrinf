@@ -208,12 +208,15 @@ class Brinf:
         
         Raises:
             BrowserNotFound: The browser could not be found.
+            BrowserNotSupported: The browser is not supported.
 
         Returns:
             browser: The browser.
         '''
         if not self.__initialize:
             raise BrinfNotInitialized()
+        if not name in self.__utils.SUPPORTED_BROWSERS:
+            raise BrowserNotSupported(name)
         try:
             data = self.__utils.get_browser_data(name)
             return Browser(**data)
