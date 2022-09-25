@@ -57,5 +57,14 @@ BROWSERS = [
         'progid': 'BraveHTML',
         'app_path': 'ProgramFiles\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
         'local_path': 'LOCALAPPDATA\\BraveSoftware\\Brave-Browser\\User Data\\Default'
+    },
+    {
+        'name': 'Vivaldi',
+        'fullname': 'Vivaldi',
+        'process': 'vivaldi.exe',
+        'chromium': True,
+        'progid': 'VivaldiHTML',
+        'app_path': 'LOCALAPPDATA\\Vivaldi\\Application\\vivaldi.exe',
+        'local_path': 'LOCALAPPDATA\\Vivaldi\\User Data\\Default'
     }
 ]
