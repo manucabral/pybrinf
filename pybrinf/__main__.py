@@ -80,6 +80,12 @@ class Brinf:
         else:
             raise BrowserNotFound()
 
+    def reset(self) -> None:
+        '''Reset the Brinf instance.'''
+        self.__initialize = False
+        self.__os = 'Unknown'
+        self.__browser = None
+
     @property
     def supported_browsers(self) -> [str]:
         '''
