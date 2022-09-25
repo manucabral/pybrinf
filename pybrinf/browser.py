@@ -218,8 +218,9 @@ class Browser:
 
         db_history = self.__history
         db_history.connect()
+        ts_epoch = 11644473600 if self.__chromium else 0
         result = db_history.execute(Utilities.download_query(self.__chromium, **kwargs))
-        downloads = [Downloaded(*download) for download in result]
+        downloads = [Downloaded(*download, ts_epoch=ts_epoch) for download in result]
         db_history.close()
         return downloads
     
@@ -241,8 +242,9 @@ class Browser:
             raise BrowserNotInstalled()
         db_history = self.__history
         db_history.connect()
+        ts_epoch = 11644473600 if self.__chromium else 0
         result = db_history.execute(Utilities.website_query(self.__chromium, **kwargs))
-        history = [History(*history) for history in result]
+        history = [History(*history, ts_epoch=ts_epoch) for history in result]
         db_history.close()
         return history
-    
+        

@@ -1,4 +1,4 @@
-import os
+import os, datetime
 
 '''
 This module contains the Item class.
@@ -7,6 +7,10 @@ Docstrings are written in Google style.
 '''
 
 class Item:
+    def __init__(self, ts_epoch: int):
+        '''Initialize the Item instance.'''
+        self.__ts_epoch = ts_epoch
+    
     def __str__(self):
         '''Get the string representation of the object.'''
         return str(self.__class__)
@@ -23,6 +27,11 @@ class Item:
         '''Open the item.'''
         pass
 
+    def to_datetime(self, time: int) -> datetime.datetime:
+        '''Get the datetime representation of the downloaded item.'''
+        tse = (time/1000000) - self.__ts_epoch
+        return datetime.datetime.fromtimestamp(tse)
+
 class Downloaded(Item):
     '''Simulates a downloaded item.'''
     def __init__(self,
@@ -31,15 +40,18 @@ class Downloaded(Item):
         start: int,
         end: int,
         tab_url: str, 
-        url: str
+        url: str,
+        ts_epoch: int,
     ):
+        '''Initialize the Downloaded instance.'''
+        super().__init__(ts_epoch)
         self.bytes = bytes
-        self.start_time = start
-        self.end_time = end
+        self.start_time = self.to_datetime(start)
+        self.end_time = self.to_datetime(end)
         self.path = path
         self.url = url
         self.tab_url = tab_url
-    
+
     def __eq__(self, other: object) -> bool:
         '''Compare the downloaded item with another downloaded item.'''
         return self.url == other.url and self.path == other.path
@@ -56,9 +68,16 @@ class History(Item):
         url: str,
         title: str,
         visit_count: int,
-        last_visit: int
+        last_visit: int,
+        ts_epoch: int,
     ):
+        '''Initialize the History instance.'''
+        super().__init__(ts_epoch)
         self.url = url
         self.title = title
         self.visit_count = visit_count
-        self.last_visit = last_visit
+        self.last_visit = self.to_datetime(last_visit)
+        
+    def __eq__(self, other: object) -> bool:
+        '''Compare the history item with another history item.'''
+        return self.url == other.url and self.title == other.title
