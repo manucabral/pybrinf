@@ -6,15 +6,11 @@ A lightweight, zero dependencies and free Python library for extract browser inf
 
 This project is just started, currently in development. Only supports **Windows**.
 
-See full documentation [here]()
-
 ### Features
 - Supports [popular browsers]()
 - Detects your default browser
-- Use any installed browser 
+- Use any installed browser
 - Get downloads or history
-- Open a website in any installed browser
-- Close an installed browser
 
 ### Installation
 PyPI package is not available yet, clone it.
@@ -30,37 +26,24 @@ from pybrinf import Brinf
 brinf = Brinf()
 brinf.init()
 ```
-Open a url
-```py
-browser = brinf.default_browser
-browser.open('www.google.com')
-```
-Close the browser
-```py
-browser.close()
-```
-Get downloads
+
+Get downloads from all installed browsers
 
 ```py
-for download in browser.downloads():
-    print(download.url)
+for download in brinf.downloads():
+    print(download.url, download.browser)
+```
+Get history from all installed browsers
+```py
+for website in brinf.history():
+    print(website.title, website.url)
+```
+Get all installed browsers in your system
+```py
+browsers = brinf.installed_browsers()
+```
 
-# get last download and open it
-download = browser.downloads(limit=1)
-download[0].open()
-```
-Get websites history
-```py
-for website in browser.websites():
-    print(website.title)
-```
-Use another installed browser
-```py
-chrome = brinf.browser('chrome')
-firefox = brinf.browser('firefox')
-yandex = brinf.browser('yandex')
-edge = brinf.browser('edge')
-```
+Check out the [wiki](https://github.com/manucabral/pybrinf/wiki) for more details.
 
 ### Constributions
 All constributions, bug reports or fixes and ideas are welcome.
