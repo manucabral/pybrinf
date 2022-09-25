@@ -43,7 +43,7 @@ class Brinf:
         except FileNotFoundError:
             return None
 
-    def __detect_browser(self, progid: str) -> dict:
+    def __detect_browser(self, progid: str) -> {}:
         '''
         Detect the browser from the progid.
 
@@ -60,7 +60,6 @@ class Brinf:
             if re.search(browser.get('name'), progid, re.IGNORECASE):
                 return browser
         raise BrowserNotDetected()
-        
 
     def init(self) -> None:
         '''
@@ -79,6 +78,39 @@ class Brinf:
             self.__initialize = True
         else:
             raise BrowserNotFound()
+
+    @property
+    def supported_browsers(self) -> [str]:
+        '''
+        Get the list of supported browsers.
+
+        Returns:
+            list: The list of supported browsers.
+        '''
+        return self.__utils.SUPPORTED_BROWSERS
+
+    @property
+    def installed_browsers(self) -> [Browser]:
+        '''
+        Get a list of installed browsers.
+
+        Raises:
+            BrinfNotInitialized: The Brinf instance has not been initialized.
+            BrowserNotFound: None browser could be found.
+
+        Returns:
+            list: The list of installed browsers.
+        '''
+        if not self.__initialize:
+            raise BrinfNotInitialized()
+        browsers = []
+        for browser in self.__utils.BROWSERS:
+            instance = Browser(**browser)
+            if instance.installed:
+                browsers.append(instance)
+        if len(browsers) == 0:
+            raise BrowserNotFound()
+        return browsers
 
     @property
     def default_browser(self) -> Browser:
@@ -114,5 +146,6 @@ class Brinf:
         try:
             data = self.__utils.get_browser_data(name)
             return Browser(**data)
-        except BrowserNotFound:
+        except:
             raise BrowserNotFound()
+        
