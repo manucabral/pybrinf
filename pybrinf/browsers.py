@@ -48,5 +48,14 @@ BROWSERS = [
         'progid': 'OperaHTML',
         'app_path': 'LOCALAPPDATA\\Programs\\Opera\\launcher.exe',
         'local_path': 'APPDATA\\Opera Software\\Opera Stable'
+    },
+    {
+        'name': 'Brave',
+        'fullname': 'Brave Browser',
+        'process': 'brave.exe',
+        'chromium': True,
+        'progid': 'BraveHTML',
+        'app_path': 'ProgramFiles\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
+        'local_path': 'LOCALAPPDATA\\BraveSoftware\\Brave-Browser\\User Data\\Default'
     }
 ]
