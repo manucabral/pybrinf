@@ -28,7 +28,17 @@ class Item:
         pass
 
     def to_datetime(self, time: int) -> datetime.datetime:
-        '''Get the datetime representation of the downloaded item.'''
+        '''
+        Get the datetime representation of the downloaded item.
+
+        Args:
+            time (int): The integer unix timestamp to convert.
+        
+        Returns:
+            datetime.datetime: The datetime representation of the downloaded item.
+        '''
+        if not time:
+            return datetime.datetime.now()
         tse = (time/1000000) - self.__ts_epoch
         return datetime.datetime.fromtimestamp(tse)
 
@@ -70,11 +80,13 @@ class History(Item):
         visit_count: int,
         last_visit: int,
         ts_epoch: int,
+        browser: str,
     ):
         '''Initialize the History instance.'''
         super().__init__(ts_epoch)
         self.url = url
         self.title = title
+        self.browser = browser
         self.visit_count = visit_count
         self.last_visit = self.to_datetime(last_visit)
         

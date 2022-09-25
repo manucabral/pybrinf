@@ -244,7 +244,7 @@ class Browser:
         db_history.connect()
         ts_epoch = 11644473600 if self.__chromium else 0
         result = db_history.execute(Utilities.website_query(self.__chromium, **kwargs))
-        history = [History(*history, ts_epoch=ts_epoch) for history in result]
+        history = [History(*history, ts_epoch=ts_epoch, browser=self.name) for history in result]
         db_history.close()
         return history
         
