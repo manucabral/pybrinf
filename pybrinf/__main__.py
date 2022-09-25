@@ -8,7 +8,7 @@ from pybrinf.browser import Browser
 from pybrinf.register import Register
 from pybrinf.database import Database
 from pybrinf.utilities import Utilities
-from pybrinf.item import History
+from pybrinf.item import History, Downloaded
 from pybrinf.exceptions import *
 
 '''
@@ -155,7 +155,6 @@ class Brinf:
 
         Raises:
             BrinfNotInitialized: The Brinf instance is not initialized.
-            HistoryNotFound: The history could not be found.
 
         Returns:
             list: The history of the default browser.
@@ -170,6 +169,34 @@ class Brinf:
                 continue
             history += browser_websites
         return sorted(history, key=lambda x: Utilities.date_to_int(x.last_visit), reverse=reverse)
+
+    def downloads(self, reverse: bool=True, **kwargs) -> [Downloaded]:
+        '''
+        Get the downloads of all browsers.
+        IMPORTANT: Please limit the number of results to avoid performance issues.
+
+        Args:
+            reverse (bool): If True, the downloads will be sorted in reverse order. Defaults to True.
+            exclude (str, list of str): Exclude especific browsers from the downloads.
+            limit (int): The maximum number of downloads items for each browser.
+            offset (int): The offset of the downloads items for each browser.
+
+        Raises:
+            BrinfNotInitialized: The Brinf instance is not initialized.
+
+        Returns:
+            list: The downloads of the default browser.
+        '''
+        if not self.__initialize:
+            raise BrinfNotInitialized()
+        browsers = self.installed_browsers(kwargs.get('exclude', []))
+        downloads = []
+        for browser in browsers:
+            browser_downloads = browser.downloads(**kwargs)
+            if len(browser_downloads) == 0:
+                continue
+            downloads += browser_downloads
+        return sorted(downloads, key=lambda x: Utilities.date_to_int(x.start_time), reverse=reverse)
 
     def browser(self, name: str) -> Browser:
         '''
