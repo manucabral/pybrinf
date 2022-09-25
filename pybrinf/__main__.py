@@ -1,3 +1,8 @@
+'''
+    Main class of PyBrinf.
+    Brinf is a class that allows you to get information about the browser.
+    Docstrings are written in Google style.
+'''
 
 import re
 import winreg
@@ -6,21 +11,22 @@ from typing import Union
 
 from pybrinf.browser import Browser
 from pybrinf.register import Register
-from pybrinf.database import Database
 from pybrinf.utilities import Utilities
 from pybrinf.item import History, Downloaded
-from pybrinf.exceptions import *
+from pybrinf.exceptions import (
+    BrowserNotDetected,
+    BrowserNotSupported,
+    BrowserNotFound,
+    BrinfNotInitialized,
+    SystemNotSupported
+)
 
-'''
-    Main class of PyBrinf.
-    Brinf is a class that allows you to get information about the browser.
-    Docstrings are written in Google style.
-'''
 
 class Brinf:
     '''Main class for PyBrinf.'''
     __initialize = False
-    __os = 'Unknown'
+    __browser = None
+    __os = platform.system()
 
     def __init__(self):
         '''Initialize the Brinf instance.'''
@@ -34,13 +40,12 @@ class Brinf:
 
         Raises:
             FileNotFoundError: The registry key could not be found.
-        
         Returns:
             str: The progid value of the default browser.
-            
         '''
         try:
-            key = self.__register.openkey(winreg.HKEY_CURRENT_USER, self.__utils.DEFAULT_BROWSER_KEY)
+            hkey = winreg.HKEY_CURRENT_USER
+            key = self.__register.openkey(hkey, self.__utils.DEFAULT_BROWSER_KEY)
             return self.__register.extract(key, 'ProgId')
         except FileNotFoundError:
             return None
@@ -51,10 +56,8 @@ class Brinf:
 
         Args:
             progid (str): The progid of the browser.
-        
         Raises:
             BrowserNotDetected: The browser could not be detected.
-
         Returns:
             dict: The browser information.
         '''
@@ -71,8 +74,7 @@ class Brinf:
             SystemNotSupported: The system is not supported.
             BrowserNotFound: The default browser could not be found.
         '''
-        self.__os = platform.system()
-        if not self.__os in self.__utils.SUPPORTED_SYSTEMS:
+        if self.__os not in self.__utils.SUPPORTED_SYSTEMS:
             raise SystemNotSupported(self.__os)
         key = self.__progid
         if key:
@@ -87,17 +89,15 @@ class Brinf:
         self.__os = 'Unknown'
         self.__browser = None
 
-    def installed_browsers(self, exclude: Union[str, list] = []) -> [Browser]:
+    def installed_browsers(self, exclude: Union[str, list] = '') -> [Browser]:
         '''
         Get a list of installed browsers.
 
         Args:
             exclude (str, list of str): Exclude especific browsers from the list.
-
         Raises:
             BrinfNotInitialized: The Brinf instance has not been initialized.
             BrowserNotFound: None browser could be found.
-
         Returns:
             list: The list of installed browsers.
         '''
@@ -105,7 +105,6 @@ class Brinf:
             raise BrinfNotInitialized()
         if isinstance(exclude, str):
             exclude = list(exclude)
-        
         browsers = []
         for browser in self.__utils.BROWSERS:
             instance = Browser(**browser)
@@ -113,7 +112,6 @@ class Brinf:
                 browsers.append(instance)
         if len(browsers) == 0:
             raise BrowserNotFound()
-        
         return browsers
 
     @property
@@ -133,7 +131,6 @@ class Brinf:
 
         Raises:
             BrinfNotInitialized: The Brinf instance is not initialized.
-        
         Returns:
             browser: The default browser of the system.
         '''
@@ -151,10 +148,8 @@ class Brinf:
             exclude (str, list of str): Exclude especific browsers from the history.
             limit (int): The maximum number of history items for each browser.
             offset (int): The offset of the history items for each browser.
-
         Raises:
             BrinfNotInitialized: The Brinf instance is not initialized.
-
         Returns:
             list: The history of the default browser.
         '''
@@ -175,14 +170,12 @@ class Brinf:
         IMPORTANT: Please limit the number of results to avoid performance issues.
 
         Args:
-            reverse (bool): If True, the downloads will be sorted in reverse order. Defaults to True.
+            reverse (bool): If True, the downloads will be sorted in reverse order.
             exclude (str, list of str): Exclude especific browsers from the downloads.
             limit (int): The maximum number of downloads items for each browser.
             offset (int): The offset of the downloads items for each browser.
-
         Raises:
             BrinfNotInitialized: The Brinf instance is not initialized.
-
         Returns:
             list: The downloads of the default browser.
         '''
@@ -204,11 +197,9 @@ class Brinf:
 
         Args:
             name (str): The name of the browser.
-        
         Raises:
             BrowserNotFound: The browser could not be found.
             BrowserNotSupported: The browser is not supported.
-
         Returns:
             browser: The browser.
         '''
@@ -219,6 +210,6 @@ class Brinf:
         try:
             data = self.__utils.get_browser_data(name)
             return Browser(**data)
-        except:
-            raise BrowserNotFound()
+        except Exception as exc:
+            raise BrowserNotFound() from exc
         
