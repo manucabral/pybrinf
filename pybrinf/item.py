@@ -7,9 +7,10 @@ Docstrings are written in Google style.
 '''
 
 class Item:
-    def __init__(self, ts_epoch: int):
+    def __init__(self, ts_epoch: int, browser: str):
         '''Initialize the Item instance.'''
         self.__ts_epoch = ts_epoch
+        self.browser = browser
     
     def __str__(self):
         '''Get the string representation of the object.'''
@@ -52,9 +53,10 @@ class Downloaded(Item):
         tab_url: str, 
         url: str,
         ts_epoch: int,
+        browser: str
     ):
         '''Initialize the Downloaded instance.'''
-        super().__init__(ts_epoch)
+        super().__init__(ts_epoch, browser)
         self.bytes = bytes
         self.start_time = self.to_datetime(start)
         self.end_time = self.to_datetime(end)
@@ -83,10 +85,9 @@ class History(Item):
         browser: str,
     ):
         '''Initialize the History instance.'''
-        super().__init__(ts_epoch)
+        super().__init__(ts_epoch, browser)
         self.url = url
         self.title = title
-        self.browser = browser
         self.visit_count = visit_count
         self.last_visit = self.to_datetime(last_visit)
         
