@@ -2,6 +2,7 @@
 import re
 import winreg
 import platform
+from typing import Union
 
 from pybrinf.browser import Browser
 from pybrinf.register import Register
@@ -86,20 +87,12 @@ class Brinf:
         self.__os = 'Unknown'
         self.__browser = None
 
-    @property
-    def supported_browsers(self) -> [str]:
-        '''
-        Get the list of supported browsers.
-
-        Returns:
-            list: The list of supported browsers.
-        '''
-        return self.__utils.SUPPORTED_BROWSERS
-
-    @property
-    def installed_browsers(self) -> [Browser]:
+    def installed_browsers(self, exclude: Union[str, list] = []) -> [Browser]:
         '''
         Get a list of installed browsers.
+
+        Args:
+            exclude (str, list of str): Exclude especific browsers from the list.
 
         Raises:
             BrinfNotInitialized: The Brinf instance has not been initialized.
@@ -110,14 +103,28 @@ class Brinf:
         '''
         if not self.__initialize:
             raise BrinfNotInitialized()
+        if isinstance(exclude, str):
+            exclude = list(exclude)
+        
         browsers = []
         for browser in self.__utils.BROWSERS:
             instance = Browser(**browser)
-            if instance.installed:
+            if instance.installed and not instance.name in exclude:
                 browsers.append(instance)
         if len(browsers) == 0:
             raise BrowserNotFound()
+        
         return browsers
+
+    @property
+    def supported_browsers(self) -> [str]:
+        '''
+        Get the list of supported browsers.
+
+        Returns:
+            list: The list of supported browsers.
+        '''
+        return self.__utils.SUPPORTED_BROWSERS
 
     @property
     def default_browser(self) -> Browser:
@@ -133,14 +140,16 @@ class Brinf:
         if not self.__initialize:
             raise BrinfNotInitialized()
         return self.__browser
-    
-    def history(self, reverse: bool = True, **kwargs) -> [History]:
+
+
+    def history(self, reverse: bool=True, **kwargs) -> [History]:
         '''
         Get the history of all browsers.
         IMPORTANT: Please limit the number of results to avoid performance issues.
 
         Args:
-            reverse (bool): If True, the history will be sorted in reverse order.
+            reverse (bool): If True, the history will be sorted in reverse order. Defaults to True.
+            exclude (str, list of str): Exclude especific browsers from the history.
             limit (int): The maximum number of history items for each browser.
             offset (int): The offset of the history items for each browser.
 
@@ -153,7 +162,7 @@ class Brinf:
         '''
         if not self.__initialize:
             raise BrinfNotInitialized()
-        browsers = self.installed_browsers
+        browsers = self.installed_browsers(kwargs.get('exclude', []))
         history = []
         for browser in browsers:
             browser_websites = browser.websites(**kwargs)
