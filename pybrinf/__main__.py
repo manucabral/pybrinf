@@ -7,6 +7,7 @@ from pybrinf.browser import Browser
 from pybrinf.register import Register
 from pybrinf.database import Database
 from pybrinf.utilities import Utilities
+from pybrinf.item import History
 from pybrinf.exceptions import *
 
 '''
@@ -127,6 +128,34 @@ class Brinf:
             raise BrinfNotInitialized()
         return self.__browser
     
+    def history(self, reverse: bool = True, **kwargs) -> [History]:
+        '''
+        Get the history of all browsers.
+        IMPORTANT: Please limit the number of results to avoid performance issues.
+
+        Args:
+            reverse (bool): If True, the history will be sorted in reverse order.
+            limit (int): The maximum number of history items for each browser.
+            offset (int): The offset of the history items for each browser.
+
+        Raises:
+            BrinfNotInitialized: The Brinf instance is not initialized.
+            HistoryNotFound: The history could not be found.
+
+        Returns:
+            list: The history of the default browser.
+        '''
+        if not self.__initialize:
+            raise BrinfNotInitialized()
+        browsers = self.installed_browsers
+        history = []
+        for browser in browsers:
+            browser_websites = browser.websites(**kwargs)
+            if len(browser_websites) == 0:
+                continue
+            history += browser_websites
+        return sorted(history, key=lambda x: Utilities.date_to_int(x.last_visit), reverse=reverse)
+
     def browser(self, name: str) -> Browser:
         '''
         Get a browser instance from the name.
