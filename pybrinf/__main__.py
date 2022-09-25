@@ -141,7 +141,6 @@ class Brinf:
             raise BrinfNotInitialized()
         return self.__browser
 
-
     def history(self, reverse: bool=True, **kwargs) -> [History]:
         '''
         Get the history of all browsers.
