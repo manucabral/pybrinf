@@ -1,5 +1,6 @@
 import sqlite3
-import sys, os
+import sys
+import os
 
 from pybrinf.exceptions import *
 
@@ -18,7 +19,6 @@ class Database:
     def __init__(self, path: str, **kwargs):
         '''Initialize the Database instance.'''
         self.__path = path
-        self.__shutil = kwargs.get('shutil', False)
         if kwargs.get('bypass', False):
             # If bypass is true, the database will be copied to a temporary directory.
             to = kwargs.get('to', None)
@@ -33,12 +33,7 @@ class Database:
             FailedToCopyDatabase: If the database cannot be copied.
         '''
         try:
-            if self.__shutil:
-                # copy large firefox path
-                import shutil
-                shutil.copy(from_path, to_path)
-            else:
-                os.system(f'copy "{from_path}" "{to_path}">nul')
+            shutil.copy(from_path, to_path)
         except:
             raise FailedToCopyDatabase()
 
@@ -53,8 +48,8 @@ class Database:
             self.__conn.close()
             self.__conn = None
             self.__c = None
-            os.system(f'del "{self.__path}"')
-
+            os.remove(self.__path)
+    
     def connect(self) -> None:
         '''
         Connect to the database.
