@@ -1,4 +1,7 @@
-'''This file contains all browser necessary data.'''
+'''
+This file contains all browser necessary data.
+NOTE: For now only supports Windows Systems.
+'''
 
 BROWSERS = [
     {
@@ -36,5 +39,14 @@ BROWSERS = [
         'progid': 'YandexHTML',
         'app_path': 'LOCALAPPDATA\\Yandex\\YandexBrowser\\Application\\browser.exe',
         'local_path': 'LOCALAPPDATA\\Yandex\\YandexBrowser\\User Data\\Default'
+    },
+    {
+        'name': 'Opera',
+        'fullname': 'Opera',
+        'process': 'opera.exe',
+        'chromium': True,
+        'progid': 'OperaHTML',
+        'app_path': 'LOCALAPPDATA\\Programs\\Opera\\launcher.exe',
+        'local_path': 'APPDATA\\Opera Software\\Opera Stable'
     }
 ]
