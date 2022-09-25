@@ -43,7 +43,7 @@ class Browser:
 
     def __str__(self):
         '''Get the string representation of the browser.'''
-        return str(self.__class__)
+        return f"Browser(name={self.name})"
     
     def __repr__(self):
         '''Get the string representation of the browser.'''
