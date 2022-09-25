@@ -4,7 +4,6 @@ class SystemNotSupported(Exception):
     '''The system is not supported.'''
     def __init__(self, system: str):
         '''Initialize the exception.'''
-        self.system = system
         super().__init__(f'The system {system} is not supported. Sorry.')
 
 class BrinfNotInitialized(Exception):
@@ -51,5 +50,5 @@ class DatabaseIsConnected(Exception):
 
 class FailedToCopyDatabase(Exception):
     '''This exception is raised when the database could not be copied.'''
-    def __init__(self):
-        super().__init__('Failed to copy the database.')
+    def __init__(self, error: str):
+        super().__init__(f'Failed to copy the database: {error}')
