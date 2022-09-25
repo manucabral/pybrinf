@@ -1,3 +1,4 @@
+from datetime import datetime
 from pybrinf.exceptions import BrowserNotFound
 from pybrinf.browsers import BROWSERS
 from pybrinf.queries import (
@@ -35,8 +36,10 @@ class Utilities:
         Returns:
             str: The filtered query.
         '''
-        query += f' LIMIT {kwargs["limit"] if kwargs.get("limit") else 10}'
+        query += f'LIMIT {kwargs["limit"] if kwargs.get("limit") else -1}'
         query += f' OFFSET {kwargs["offset"] if kwargs.get("offset") else 0}'
+        print(query)
+        print()
         return query
 
     @staticmethod
@@ -86,3 +89,17 @@ class Utilities:
             if browser['name'].lower() == name.lower():
                 return browser
         raise BrowserNotFound()
+
+
+    @staticmethod
+    def date_to_int(date: datetime) -> int:
+        '''
+        Convert a datetime object to an integer.
+
+        Args:
+            date (datetime): The datetime object to convert.
+
+        Returns:
+            int: The integer representation of the datetime object.
+        '''
+        return int(date.strftime("%Y%m%d%H%M%S"))
