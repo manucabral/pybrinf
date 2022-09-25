@@ -38,8 +38,6 @@ class Utilities:
         '''
         query += f'LIMIT {kwargs["limit"] if kwargs.get("limit") else -1}'
         query += f' OFFSET {kwargs["offset"] if kwargs.get("offset") else 0}'
-        print(query)
-        print()
         return query
 
     @staticmethod
