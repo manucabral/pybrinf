@@ -1,32 +1,33 @@
-import os, datetime
-
 '''
 This module contains the Item class.
 The Item class is used to store different types of items (Downloads, History, etc).
 Docstrings are written in Google style.
 '''
 
+import os
+import datetime
+
 class Item:
+    '''Simulates a simple item.'''
+
     def __init__(self, ts_epoch: int, browser: str):
         '''Initialize the Item instance.'''
         self.__ts_epoch = ts_epoch
         self.browser = browser
-    
+
     def __str__(self):
         '''Get the string representation of the object.'''
         return str(self.__class__)
-    
+
     def __repr__(self):
         '''Get the string representation of the object.'''
         return self.__str__()
-    
+
     def __eq__(self, other: object) -> bool:
         '''Compare the item with another item.'''
-        pass
 
     def open(self) -> None:
         '''Open the item.'''
-        pass
 
     def to_datetime(self, time: int) -> datetime.datetime:
         '''
@@ -34,7 +35,6 @@ class Item:
 
         Args:
             time (int): The integer unix timestamp to convert.
-        
         Returns:
             datetime.datetime: The datetime representation of the downloaded item.
         '''
@@ -45,12 +45,13 @@ class Item:
 
 class Downloaded(Item):
     '''Simulates a downloaded item.'''
+
     def __init__(self,
         bytes: int,
         path: str,
         start: int,
         end: int,
-        tab_url: str, 
+        tab_url: str,
         url: str,
         ts_epoch: int,
         browser: str
@@ -67,13 +68,14 @@ class Downloaded(Item):
     def __eq__(self, other: object) -> bool:
         '''Compare the downloaded item with another downloaded item.'''
         return self.url == other.url and self.path == other.path
-    
+
     def open(self) -> None:
         '''Open the downloaded item directory.'''
         try:
             os.startfile(self.path.replace(self.path.split('\\')[-1], ''))
         except:
             pass
+
 class History(Item):
     '''Simulates a history item.'''
     def __init__(self,
@@ -90,7 +92,7 @@ class History(Item):
         self.title = title
         self.visit_count = visit_count
         self.last_visit = self.to_datetime(last_visit)
-        
+
     def __eq__(self, other: object) -> bool:
         '''Compare the history item with another history item.'''
         return self.url == other.url and self.title == other.title

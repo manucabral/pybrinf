@@ -101,3 +101,4 @@ class Utilities:
             int: The integer representation of the datetime object.
         '''
         return int(date.strftime("%Y%m%d%H%M%S"))
+    

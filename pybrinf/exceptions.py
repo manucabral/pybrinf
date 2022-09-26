@@ -23,7 +23,7 @@ class BrowserNotFound(Exception):
 class BrowserNotSupported(Exception):
     '''This exception is raised when the browser is not supported.'''
     def __init__(self, browser: str):
-        super().__init__(f'The browser {browser} is not supported. Please check the propertie supported_browsers.')
+        super().__init__(f'The browser {browser} is not supported.')
 
 class BrowserNotInstalled(Exception):
     '''This exception is raised when the browser is not installed.'''

@@ -1,3 +1,10 @@
+
+'''
+Browser implementation for PyBrinf.
+This module is used to simulate a simple browser.
+Docstrings are written in Google style.
+'''
+
 import re
 import os
 import subprocess
@@ -7,19 +14,12 @@ from pybrinf.database import Database
 from pybrinf.utilities import Utilities
 from pybrinf.exceptions import BrowserNotInstalled, BrowserNotRunning
 
-'''
-Browser implementation for PyBrinf.
-This module is used to simulate a simple browser.
-Docstrings are written in Google style.
-'''
-
 class Browser:
     '''
         Browser class core.
 
         Args:
             **kwargs: The keyword arguments to initialize the browser.
-        
         Attributes:
             name (str): The name of the browser.
             fullname (str): The full name of the browser.
@@ -36,19 +36,17 @@ class Browser:
         self.__fullname = kwargs.get('fullname', None)
         self.__app_path = kwargs.get('app_path', None)
         self.__local_path = kwargs.get('local_path', None)
-        self.__progid = kwargs.get('progid', None)
         self.__process = kwargs.get('process', None)
         self.__chromium = kwargs.get('chromium', None)
-        self.__version = kwargs.get('version', None)
 
     def __str__(self):
         '''Get the string representation of the browser.'''
         return f"Browser(name={self.name})"
-    
+
     def __repr__(self):
         '''Get the string representation of the browser.'''
         return self.__str__()
-    
+
     def __eq__(self, other: object) -> bool:
         '''Compare the browser with another browser.'''
         return self.name == other.name and self.process == other.process
@@ -60,7 +58,6 @@ class Browser:
 
         Raises:
             BrowserNotInstalled: If the browser is not installed.
-
         Returns:
             Database: The history database of the browser.
         '''
@@ -69,26 +66,26 @@ class Browser:
         file = 'History' if self.__chromium else 'places.sqlite'
         path = self.path + '\\' + file
         return Database(
-            path= path, 
-            bypass= True, 
+            path=path,
+            bypass=True,
             to= os.environ.get('TEMP')
         )
-    
+
     @property
     def name(self) -> str:
         '''Get the name of the browser.'''
         return self.__name
-    
+
     @property
     def process(self) -> str:
         '''Get the process of the browser.'''
         return self.__process
-    
+
     @property
     def fullname(self) -> str:
         '''Get the fullname of the browser.'''
         return self.__fullname
-    
+
     @property
     def path(self) -> str:
         '''Get the full path of the browser.'''
@@ -96,25 +93,24 @@ class Browser:
         path = self.__local_path.replace(base, os.environ.get(base))
         if self.__chromium:
             return path
-        else:
-            # for now only firefox is supported
-            try:
-                with open(f'{path}\\profiles.ini', 'r') as file:
-                    profile = file.readlines()[1].split('=')[1]
-                    path += "\\Profiles\\" + profile.split('/')[1].strip()
-            except:
-                raise Exception('Unknown error while getting the profile path.')
+        # for now only firefox is supported
+        try:
+            with open(f'{path}\\profiles.ini', 'r', encoding='utf-8') as file:
+                profile = file.readlines()[1].split('=')[1]
+                path += "\\Profiles\\" + profile.split('/')[1].strip()
+        except Exception as exc:
+            raise Exception('Error while getting the profile path.') from exc
         return path
-    
+
     @property
     def app_path(self) -> str:
         '''Get the app path of the browser.'''
         try:
             base = self.__app_path.split('\\')[0]
             return self.__app_path.replace(base, os.environ.get(base))
-        except:
-           return ''
-    
+        except Exception as exc:
+            raise BrowserNotInstalled() from exc
+
     @property
     def installed(self) -> bool:
         '''
@@ -133,10 +129,10 @@ class Browser:
         Returns:
             bool: True if the browser is running, False otherwise.
         '''
-        query = Constants.SEARCH_PROCESS.format(self.process)
+        query = Utilities.SEARCH_PROCESS.format(self.process)
         res = subprocess.check_output(query, stderr=subprocess.PIPE).decode()
         return bool(re.search(self.name, res))
-    
+
     @property
     def current_website(self):
         '''
@@ -145,7 +141,6 @@ class Browser:
 
         Raises:
             BrowserNotInstalled: If the browser is not installed.
-
         Returns:
             str: The current website of the browser.
         '''
@@ -170,7 +165,7 @@ class Browser:
             path (str): The path to define.
         '''
         self.__app_path = path
-    
+
     def set_local_path(self, path: str) -> None:
         '''
         Set the local path of the browser.
@@ -187,24 +182,26 @@ class Browser:
 
         Args:
             url (str): The url to open.
-        
         Raises:
             BrowserNotInstalled: If the browser is not installed.
-        
         Returns:
             bool: True if the browser is opened, False otherwise.
         '''
         if not self.installed:
             raise BrowserNotInstalled()
-        subprocess.Popen([self.app_path, url])
-    
+        try:
+            subprocess.Popen([self.app_path, url])
+            return True
+        except Exception as exc:
+            raise Exception('Error while opening the browser.') from exc
+        return False
+
     def close(self) -> True:
         '''
         Close the browser.
 
         Raises:
             BrowserNotInstalled: If the browser is not installed.
-        
         Returns:
             bool: True if the browser is closed, False otherwise.
         '''
@@ -212,12 +209,12 @@ class Browser:
             raise BrowserNotInstalled()
         query = Utilities.KILL_PROCESS.format(self.process)
         try:
-            p = subprocess.Popen(query, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = p.communicate()
-            return bool(not err and out)
-        except:
-            raise Exception('Unknown error while closing the browser.')
-    
+            with subprocess.Popen(query, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
+                out, err = proc.communicate()
+                return bool(not err and out)
+        except Exception as exc:
+            raise Exception('Unknown error while closing the browser.') from exc
+
     def downloads(self, **kwargs) -> [Downloaded]:
         '''
         Get the list of downloaded items from the browser.
@@ -225,10 +222,8 @@ class Browser:
         Args:
             limit (int): The limit of the items to get. Default is 10.
             offset (int): The offset of the items to get. Default is 0.
-        
         Raises:
             BrowserNotInstalled: If the browser is not installed.
-        
         Returns:
             list(Downloaded): The list of downloaded items.
         '''
@@ -238,11 +233,11 @@ class Browser:
         db_history = self.__history
         db_history.connect()
         ts_epoch = 11644473600 if self.__chromium else 0
-        result = db_history.execute(Utilities.download_query(self.__chromium, **kwargs))
-        downloads = [Downloaded(*download, ts_epoch=ts_epoch, browser=self.fullname) for download in result]
+        res = db_history.execute(Utilities.download_query(self.__chromium, **kwargs))
+        downloads = [Downloaded(*download, ts_epoch, browser=self.fullname) for download in res]
         db_history.close()
         return downloads
-    
+
     def websites(self, **kwargs) -> [History]:
         '''
         Get the list of visited websites from the browser.
@@ -250,10 +245,8 @@ class Browser:
         Args:
             limit (int): The limit of the items to get. Default is 10.
             offset (int): The offset of the items to get. Default is 0.
-
         Raises:
             BrowserNotInstalled: If the browser is not installed.
-
         Returns:
             list: The history of the browser.
         '''
@@ -263,7 +256,6 @@ class Browser:
         db_history.connect()
         ts_epoch = 11644473600 if self.__chromium else 0
         result = db_history.execute(Utilities.website_query(self.__chromium, **kwargs))
-        history = [History(*history, ts_epoch=ts_epoch, browser=self.fullname) for history in result]
+        history = [History(*history, ts_epoch, browser=self.fullname) for history in result]
         db_history.close()
         return history
-        
