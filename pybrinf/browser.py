@@ -133,29 +133,6 @@ class Browser:
         res = subprocess.check_output(query, stderr=subprocess.PIPE).decode()
         return bool(re.search(self.name, res))
 
-    @property
-    def current_website(self):
-        '''
-        Get the current tab title of the browser.
-        NOTE: If you rename the window browser, the title will be the new name.
-
-        Raises:
-            BrowserNotInstalled: If the browser is not installed.
-        Returns:
-            str: The current website of the browser.
-        '''
-        if not self.installed:
-            raise BrowserNotInstalled()
-        if not self.running:
-            raise BrowserNotRunning()
-        query = Utilities.SEARCH_TITLE.format(self.process)
-        res = subprocess.check_output(query, stderr=subprocess.PIPE).decode('unicode_escape')
-        # TODO: Implement history db parsing
-        for line in res.splitlines():
-            if 'Window Title:' in line:
-                return line.split('Window Title:')[1].strip()
-        return ''
-
     def set_app_path(self, path: str) -> None:
         '''
         Set the app path of the browser.
