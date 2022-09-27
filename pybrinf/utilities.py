@@ -3,7 +3,7 @@ This module contains all utility functions used in PyBrinf.
 TODO: Add more browsers and linux / macos support.
 '''
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pybrinf.exceptions import BrowserError
 from pybrinf.browsers import BROWSERS
 from pybrinf.queries import (
@@ -47,7 +47,7 @@ class Utilities:
 
         Args:
             chromium (bool): If the browser is chromium based.
-            limit (int): The limit of the items to get. 
+            limit (int): The limit of the items to get.
             offset (int): The offset of the items to get.
 
         Returns:
@@ -65,7 +65,6 @@ class Utilities:
             chromium (bool): If the browser is chromium based.
             limit (int): The limit of the items to get.
             offset (int): The offset of the items to get.
-        
         Returns:
             str: The query for downloads.
         '''
@@ -79,7 +78,6 @@ class Utilities:
 
         Args:
             name (str): The name of the browser.
-        
         Returns:
             dict: The data of the browser.
         '''
@@ -100,4 +98,32 @@ class Utilities:
             int: The integer representation of the datetime object.
         '''
         return int(date.strftime("%Y%m%d%H%M%S"))
-    
+
+    @staticmethod
+    def webkit_to_date(webkit: int) -> datetime:
+        '''
+        Convert a webkit timestamp to a datetime object.
+        Source: https://www.epochconverter.com/webkit
+
+        Args:
+            webkit (int): The webkit timestamp to convert.
+        Returns:
+            datetime: The datetime object.
+        '''
+        epoch_start = datetime(1601, 1, 1)
+        delta = timedelta(microseconds=webkit)
+        return epoch_start + delta
+
+    @staticmethod
+    def unix_to_date(unix: int) -> datetime:
+        '''
+        Convert a unix timestamp to a datetime object.
+
+        Args:
+            unix (int): The unix timestamp to convert.
+        Returns:
+            datetime: The datetime object.
+        '''
+        unix_time = unix / 1000000
+        epoch = datetime.utcfromtimestamp(0)
+        return epoch + timedelta(seconds=unix_time)
