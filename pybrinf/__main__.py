@@ -151,7 +151,7 @@ class Brinf:
         browsers = self.installed_browsers(kwargs.get('exclude', []))
         history = []
         for browser in browsers:
-            browser_websites = browser.websites(**kwargs)
+            browser_websites = browser.history(**kwargs)
             if len(browser_websites) == 0:
                 continue
             history += browser_websites

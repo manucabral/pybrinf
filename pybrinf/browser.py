@@ -240,13 +240,13 @@ class Browser:
         db_history.close()
         return downloads
 
-    def websites(self, **kwargs) -> [History]:
+    def history(self, **kwargs) -> [History]:
         '''
-        Get the list of visited websites from the browser.
+        Get the list of history items from the browser.
 
         Args:
-            limit (int): The limit of the items to get. Default is 10.
-            offset (int): The offset of the items to get. Default is 0.
+            limit (int): The limit of the items to get.
+            offset (int): The offset of the items to get.
         Raises:
             BrowserError: If the browser is not installed.
         Returns:
