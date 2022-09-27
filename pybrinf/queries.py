@@ -27,4 +27,5 @@ SELECT 0 as total_bytes, content as current_path, dateAdded as start_time,
 lastModified as end_time, url, url as tab_url
 FROM moz_annos, moz_places
 WHERE moz_annos.place_id == moz_places.id
+ORDER BY start_time DESC
 '''
