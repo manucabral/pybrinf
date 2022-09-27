@@ -1,5 +1,10 @@
+'''
+This module contains all utility functions used in PyBrinf.
+TODO: Add more browsers and linux / macos support.
+'''
+
 from datetime import datetime
-from pybrinf.exceptions import BrowserNotFound
+from pybrinf.exceptions import BrowserError
 from pybrinf.browsers import BROWSERS
 from pybrinf.queries import (
     DOWNLOAD_QUERY,
@@ -7,11 +12,6 @@ from pybrinf.queries import (
     MOZ_WEBSITE_QUERY,
     WEBSITE_QUERY,
 )
-
-'''
-This module contains all utility functions used in PyBrinf.
-TODO: Add more browsers and linux / macos support.
-'''
 
 class Utilities:
     '''Utilities class for PyBrinf.'''
@@ -86,8 +86,7 @@ class Utilities:
         for browser in BROWSERS:
             if browser['name'].lower() == name.lower():
                 return browser
-        raise BrowserNotFound()
-
+        raise BrowserError('The browser is not supported.')
 
     @staticmethod
     def date_to_int(date: datetime) -> int:

@@ -1,54 +1,30 @@
 '''This module contains all the exceptions used in PyBrinf.'''
 
-class SystemNotSupported(Exception):
-    '''The system is not supported.'''
-    def __init__(self, system: str):
-        '''Initialize the exception.'''
-        super().__init__(f'The system {system} is not supported. Sorry.')
-
-class BrinfNotInitialized(Exception):
-    '''This exception is raised when the Brinf class is not initialized.'''
-    def __init__(self):
-        super().__init__('Brinf is not initialized. Please call the init method.')
-
-class BrowserNotDetected(Exception):
-    '''This exception is raised when the browser is not detected.'''
-    def __init__(self):
-        super().__init__('The browser could not be detected.')
-
-class BrowserNotFound(Exception):
-    '''This exception is raised when the browser is not found.'''
-    def __init__(self):
-        super().__init__('The browser could not be found.')
-class BrowserNotSupported(Exception):
-    '''This exception is raised when the browser is not supported.'''
-    def __init__(self, browser: str):
-        super().__init__(f'The browser {browser} is not supported.')
-
-class BrowserNotInstalled(Exception):
-    '''This exception is raised when the browser is not installed.'''
-    def __init__(self):
-        super().__init__('The browser is not installed.')
-
-class BrowserNotRunning(Exception):
-    '''This exception is raised when the browser is not running.'''
-    def __init__(self):
-        super().__init__('The browser is not running.')
-class FailedToConnect(Exception):
-    '''This exception is raised when the database could not be connected.'''
-    def __init__(self):
-        super().__init__('The database could not be connected.')
-
-class DatabaseIsNotConnected(Exception):
-    '''This exception is raised when the database is not connected.'''
-    def __init__(self):
-        super().__init__('The database is not connected.')
-class DatabaseIsConnected(Exception):
-    '''This exception is raised when the database is already connected.'''
-    def __init__(self):
-        super().__init__('The database is already open.')
-
-class FailedToCopyDatabase(Exception):
-    '''This exception is raised when the database could not be copied.'''
+class SystemBrinfError(Exception):
+    '''The exception is raised when a system error occurs.'''
     def __init__(self, error: str):
-        super().__init__(f'Failed to copy the database: {error}')
+        super().__init__(error)
+class BrinfError(Exception):
+    '''This exception is raised when a error occurs in the Brinf module.'''
+    def __init__(self, error: str):
+        super().__init__(error)
+
+class DatabaseError(Exception):
+    '''This exception is raised when a error occurs in the database module.'''
+    def __init__(self, error: str):
+        super().__init__(error)
+
+class BrowserError(Exception):
+    '''This exception is raised when a error occurs from the browser.'''
+    def __init__(self, error: str):
+        super().__init__(error)
+
+class SessionError(Exception):
+    '''This exception is raised when a session error occurs.'''
+    def __init__(self, error: str):
+        super().__init__(error)
+
+class ParserError(Exception):
+    '''This exception is raised when the parser fails.'''
+    def __init__(self, error: str):
+        super().__init__(error)

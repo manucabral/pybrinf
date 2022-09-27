@@ -9,7 +9,7 @@ import sqlite3
 import shutil
 import os
 
-from pybrinf.exceptions import DatabaseIsConnected, DatabaseIsNotConnected, FailedToCopyDatabase
+from pybrinf.exceptions import DatabaseError
 
 class Database:
     '''Database class core'''
@@ -31,12 +31,12 @@ class Database:
         Copy a file to another directory.
 
         Raises:
-            FailedToCopyDatabase: If the database cannot be copied.
+            DatabaseError: If the file cannot be copied.
         '''
         try:
             shutil.copy(from_path, to_path)
         except Exception as exc:
-            raise FailedToCopyDatabase(exc) from exc
+            raise DatabaseError('Cannot copy the database') from exc
 
     def __del__(self) -> None:
         '''When the Database instance is deleted, close the connection.'''
@@ -56,15 +56,15 @@ class Database:
         Connect to the database.
 
         Raises:
-            DatabaseIsConnected: If the database is already connected.
+            DatabaseError: If the database cannot be connected or is already connected.
         '''
         if self.connected:
-            raise DatabaseIsConnected()
+            raise DatabaseError('Database is already connected')
         try:
             self.__conn = sqlite3.connect(self.__path)
             self.__c = self.__conn.cursor()
         except Exception as exc:
-            raise DatabaseIsNotConnected() from exc
+            raise DatabaseError('Cannot connect to the database') from exc
 
     def execute(self, query: str) -> list:
         '''
@@ -73,9 +73,12 @@ class Database:
         Args:
             query (str): The query to execute.
         Raises:
-            DatabaseIsNotConnected: If the database is not connected.
+            DatabaseError: If the database is not connected or the query cannot be executed.
         '''
         if not self.connected:
-            raise DatabaseIsNotConnected()
-        self.__c.execute(query)
-        return self.__c.fetchall()
+            raise DatabaseError('Database is not connected')
+        try:
+            self.__c.execute(query)
+            return self.__c.fetchall()
+        except Exception as exc:
+            raise DatabaseError('Cannot execute the query') from exc

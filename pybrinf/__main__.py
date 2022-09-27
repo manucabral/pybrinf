@@ -13,14 +13,7 @@ from pybrinf.browser import Browser
 from pybrinf.register import Register
 from pybrinf.utilities import Utilities
 from pybrinf.item import History, Downloaded
-from pybrinf.exceptions import (
-    BrowserNotDetected,
-    BrowserNotSupported,
-    BrowserNotFound,
-    BrinfNotInitialized,
-    SystemNotSupported
-)
-
+from pybrinf.exceptions import BrowserError, BrinfError, SystemBrinfError
 
 class Brinf:
     '''Main class for PyBrinf.'''
@@ -57,31 +50,31 @@ class Brinf:
         Args:
             progid (str): The progid of the browser.
         Raises:
-            BrowserNotDetected: The browser could not be detected.
+            BrowserError: The browser could not be detected.
         Returns:
             dict: The browser information.
         '''
         for browser in self.__utils.BROWSERS:
             if re.search(browser.get('name'), progid, re.IGNORECASE):
                 return browser
-        raise BrowserNotDetected()
+        raise BrowserError('The browser could not be detected.')
 
     def init(self) -> None:
         '''
         This method must be called before using any other methods of the class.
 
         Raises:
-            SystemNotSupported: The system is not supported.
-            BrowserNotFound: The default browser could not be found.
+            SystemBrinfError: The system is not supported.
+            BrowserError: The default browser could not be found.
         '''
         if self.__os not in self.__utils.SUPPORTED_SYSTEMS:
-            raise SystemNotSupported(self.__os)
+            raise SystemBrinfError(f'System {self.__os} is not supported.')
         key = self.__progid
         if key:
             self.__browser = Browser(**self.__detect_browser(key))
             self.__initialize = True
         else:
-            raise BrowserNotFound()
+            raise BrowserError('The default browser could not be found.')
 
     def reset(self) -> None:
         '''Reset the Brinf instance.'''
@@ -96,13 +89,13 @@ class Brinf:
         Args:
             exclude (str, list of str): Exclude especific browsers from the list.
         Raises:
-            BrinfNotInitialized: The Brinf instance has not been initialized.
-            BrowserNotFound: None browser could be found.
+            BrinfError: The Brinf instance has not been initialized.
+            BrowserError: None browser could be found.
         Returns:
             list: The list of installed browsers.
         '''
         if not self.__initialize:
-            raise BrinfNotInitialized()
+            raise BrinfError('The Brinf instance is not initialized.')
         if isinstance(exclude, str):
             exclude = list(exclude)
         browsers = []
@@ -111,7 +104,7 @@ class Brinf:
             if instance.installed and not instance.name in exclude:
                 browsers.append(instance)
         if len(browsers) == 0:
-            raise BrowserNotFound()
+            raise BrowserError('None browser could be found.')
         return browsers
 
     @property
@@ -135,7 +128,7 @@ class Brinf:
             browser: The default browser of the system.
         '''
         if not self.__initialize:
-            raise BrinfNotInitialized()
+            raise BrinfError('The Brinf instance is not initialized.')
         return self.__browser
 
     def history(self, reverse: bool=True, **kwargs) -> [History]:
@@ -154,7 +147,7 @@ class Brinf:
             list: The history of the default browser.
         '''
         if not self.__initialize:
-            raise BrinfNotInitialized()
+            raise BrinfError('The Brinf instance is not initialized.')
         browsers = self.installed_browsers(kwargs.get('exclude', []))
         history = []
         for browser in browsers:
@@ -180,7 +173,7 @@ class Brinf:
             list: The downloads of the default browser.
         '''
         if not self.__initialize:
-            raise BrinfNotInitialized()
+            raise BrinfError('The Brinf instance is not initialized.')
         browsers = self.installed_browsers(kwargs.get('exclude', []))
         downloads = []
         for browser in browsers:
@@ -198,18 +191,18 @@ class Brinf:
         Args:
             name (str): The name of the browser.
         Raises:
-            BrowserNotFound: The browser could not be found.
-            BrowserNotSupported: The browser is not supported.
+            BrinfError: The Brinf instance is not initialized.
+            BrowserError: The browser could not be found or the browser is not supported.
         Returns:
             browser: The browser.
         '''
         if not self.__initialize:
-            raise BrinfNotInitialized()
+            raise BrinfError('The Brinf instance is not initialized.')
         if not name in self.__utils.SUPPORTED_BROWSERS:
-            raise BrowserNotSupported(name)
+            raise BrowserError(f'The browser {name} is not supported.')
         try:
             data = self.__utils.get_browser_data(name)
             return Browser(**data)
         except Exception as exc:
-            raise BrowserNotFound() from exc
+            raise BrowserError('The browser could not be found.') from exc
         
