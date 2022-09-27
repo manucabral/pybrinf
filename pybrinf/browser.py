@@ -12,7 +12,8 @@ import subprocess
 from pybrinf.item import Downloaded, History
 from pybrinf.database import Database
 from pybrinf.utilities import Utilities
-from pybrinf.exceptions import BrowserNotInstalled, BrowserNotRunning
+from pybrinf.session import Session
+from pybrinf.exceptions import BrowserError
 
 class Browser:
     '''
@@ -57,12 +58,12 @@ class Browser:
         Get the history database of the browser.
 
         Raises:
-            BrowserNotInstalled: If the browser is not installed.
+            BrowserError: If the browser is not installed.
         Returns:
             Database: The history database of the browser.
         '''
         if not self.installed:
-            raise BrowserNotInstalled()
+            raise BrowserError('The browser is not installed.')
         file = 'History' if self.__chromium else 'places.sqlite'
         path = self.path + '\\' + file
         return Database(
@@ -88,7 +89,12 @@ class Browser:
 
     @property
     def path(self) -> str:
-        '''Get the full path of the browser.'''
+        '''
+        Get the full path of the browser.
+
+        Raises:
+            BrowserError: If the browser is not installed.
+        '''
         base = self.__local_path.split('\\')[0]
         path = self.__local_path.replace(base, os.environ.get(base))
         if self.__chromium:
@@ -99,17 +105,22 @@ class Browser:
                 profile = file.readlines()[1].split('=')[1]
                 path += "\\Profiles\\" + profile.split('/')[1].strip()
         except Exception as exc:
-            raise Exception('Error while getting the profile path.') from exc
+            raise BrowserError('Error while getting the profile path.') from exc
         return path
 
     @property
     def app_path(self) -> str:
-        '''Get the app path of the browser.'''
+        '''
+        Get the app path of the browser.
+
+        Raises:
+            BrowserError: If the browser is not installed.
+        '''
         try:
             base = self.__app_path.split('\\')[0]
             return self.__app_path.replace(base, os.environ.get(base))
         except Exception as exc:
-            raise BrowserNotInstalled() from exc
+            raise BrowserError('Error while getting the app path.') from exc
 
     @property
     def installed(self) -> bool:
@@ -160,37 +171,51 @@ class Browser:
         Args:
             url (str): The url to open.
         Raises:
-            BrowserNotInstalled: If the browser is not installed.
+            BrowserError: If the browser is not installed or cannot be opened.
         Returns:
             bool: True if the browser is opened, False otherwise.
         '''
         if not self.installed:
-            raise BrowserNotInstalled()
+            raise BrowserError('The browser is not installed.')
         try:
             subprocess.Popen([self.app_path, url])
             return True
         except Exception as exc:
-            raise Exception('Error while opening the browser.') from exc
+            raise BrowserError('Error while opening the browser.') from exc
         return False
+
+    def session(self) -> Session:
+        '''
+            Get the last session of the browser.
+
+            Raises:
+                BrowserError: If the browser is not installed or not supported.
+        '''
+        if not self.installed:
+            raise BrowserError('The browser is not installed.')
+        if not self.__chromium:
+            raise BrowserError('Only chromium based browsers are supported.')
+        session = Session(self.path)
+        return session
 
     def close(self) -> True:
         '''
         Close the browser.
 
         Raises:
-            BrowserNotInstalled: If the browser is not installed.
+            BrowserError: If the browser is not installed or cannot be closed.
         Returns:
             bool: True if the browser is closed, False otherwise.
         '''
         if not self.installed:
-            raise BrowserNotInstalled()
+            raise BrowserError('The browser is not installed.')
         query = Utilities.KILL_PROCESS.format(self.process)
         try:
             with subprocess.Popen(query, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
                 out, err = proc.communicate()
                 return bool(not err and out)
         except Exception as exc:
-            raise Exception('Unknown error while closing the browser.') from exc
+            raise BrowserError('Unknown error while closing the browser.') from exc
 
     def downloads(self, **kwargs) -> [Downloaded]:
         '''
@@ -200,16 +225,16 @@ class Browser:
             limit (int): The limit of the items to get. Default is 10.
             offset (int): The offset of the items to get. Default is 0.
         Raises:
-            BrowserNotInstalled: If the browser is not installed.
+            BrowserError: If the browser is not installed.
         Returns:
             list(Downloaded): The list of downloaded items.
         '''
         if not self.installed:
-            raise BrowserNotInstalled()
+            raise BrowserError('The browser is not installed.')
 
         db_history = self.__history
         db_history.connect()
-        ts_epoch = 11644473600 if self.__chromium else 0
+        ts_epoch = 116444794600 if self.__chromium else 0
         res = db_history.execute(Utilities.download_query(self.__chromium, **kwargs))
         downloads = [Downloaded(*download, ts_epoch, browser=self.fullname) for download in res]
         db_history.close()
@@ -223,12 +248,12 @@ class Browser:
             limit (int): The limit of the items to get. Default is 10.
             offset (int): The offset of the items to get. Default is 0.
         Raises:
-            BrowserNotInstalled: If the browser is not installed.
+            BrowserError: If the browser is not installed.
         Returns:
             list: The history of the browser.
         '''
         if not self.installed:
-            raise BrowserNotInstalled()
+            raise BrowserError('The browser is not installed.')
         db_history = self.__history
         db_history.connect()
         ts_epoch = 11644473600 if self.__chromium else 0
