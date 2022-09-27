@@ -38,6 +38,14 @@ Get history from all installed browsers
 for website in brinf.history():
     print(website.title, website.url)
 ```
+Get last session tabs of a browser
+```py
+browser = brinf.default_browser
+session = browser.session()
+for tabs in session.tabs()
+    print(tabs.url)
+```
+
 Get all installed browsers in your system
 ```py
 browsers = brinf.installed_browsers()
