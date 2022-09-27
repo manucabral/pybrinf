@@ -5,14 +5,15 @@ Docstrings are written in Google style.
 '''
 
 import os
-import datetime
+
+from pybrinf.exceptions import SystemBrinfError
+from pybrinf.utilities import Utilities
 
 class Item:
     '''Simulates a simple item.'''
 
-    def __init__(self, ts_epoch: int, browser: str):
+    def __init__(self, browser: str):
         '''Initialize the Item instance.'''
-        self.__ts_epoch = ts_epoch
         self.browser = browser
 
     def __str__(self):
@@ -29,41 +30,24 @@ class Item:
     def open(self) -> None:
         '''Open the item.'''
 
-    def to_datetime(self, time: int) -> datetime.datetime:
-        '''
-        Get the datetime representation of the downloaded item.
-
-        Args:
-            time (int): The integer unix timestamp to convert.
-        Returns:
-            datetime.datetime: The datetime representation of the downloaded item.
-        '''
-        if not time:
-            return datetime.datetime.now()
-        tse = (time/1000000) - self.__ts_epoch
-        return datetime.datetime.fromtimestamp(tse)
-
 class Downloaded(Item):
     '''Simulates a downloaded item.'''
 
-    def __init__(self,
-        bytes: int,
-        path: str,
-        start: int,
-        end: int,
-        tab_url: str,
-        url: str,
-        ts_epoch: int,
-        browser: str
-    ):
+    def __init__(self, *args):
         '''Initialize the Downloaded instance.'''
-        super().__init__(ts_epoch, browser)
-        self.bytes = bytes
-        self.start_time = self.to_datetime(start)
-        self.end_time = self.to_datetime(end)
-        self.path = path
-        self.url = url
-        self.tab_url = tab_url
+        super().__init__(args[0])
+        self.bytes = args[1]
+        self.path = args[2]
+        if 'Firefox' in args[0]:
+            self.start_time = Utilities.unix_to_date(args[3])
+            self.end_time = Utilities.unix_to_date(args[4])
+        else:
+            self.start_time = Utilities.webkit_to_date(args[3])
+            self.end_time = Utilities.webkit_to_date(args[4])
+        self.end_time = Utilities.webkit_to_date(args[4])
+        self.tab_url = args[5]
+        self.url = args[6]
+        # self.state = args[7] TODO: Add state
 
     def __eq__(self, other: object) -> bool:
         '''Compare the downloaded item with another downloaded item.'''
@@ -73,25 +57,23 @@ class Downloaded(Item):
         '''Open the downloaded item directory.'''
         try:
             os.startfile(self.path.replace(self.path.split('\\')[-1], ''))
-        except:
-            pass
+        except Exception as exc:
+            raise SystemBrinfError(exc) from exc
+
 
 class History(Item):
     '''Simulates a history item.'''
-    def __init__(self,
-        url: str,
-        title: str,
-        visit_count: int,
-        last_visit: int,
-        ts_epoch: int,
-        browser: str,
-    ):
+
+    def __init__(self, *args):
         '''Initialize the History instance.'''
-        super().__init__(ts_epoch, browser)
-        self.url = url
-        self.title = title
-        self.visit_count = visit_count
-        self.last_visit = self.to_datetime(last_visit)
+        super().__init__(args[0])
+        self.url = args[1]
+        self.title = args[2]
+        self.visit_count = args[3]
+        if 'Firefox' in self.browser:
+            self.last_visit = Utilities.unix_to_date(args[4])
+        else:
+            self.last_visit = Utilities.webkit_to_date(args[4])
 
     def __eq__(self, other: object) -> bool:
         '''Compare the history item with another history item.'''
