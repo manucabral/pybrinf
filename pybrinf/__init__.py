@@ -4,7 +4,7 @@
 '''
 
 __title__ = 'pybrinf'
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 __author__ = 'Manuel Cabral'
 __license__ = 'GNU General Public License v3.0'
 
