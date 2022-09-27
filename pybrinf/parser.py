@@ -99,7 +99,7 @@ class Parser:
         Get all commands from a SNSS file
 
         Raises:
-            ParserError: If the file is not a SNSS file
+            ParserError: If the file is not a SNSS file or the file is corrupted
         Returns:
             list: A list of Command instances
         '''
