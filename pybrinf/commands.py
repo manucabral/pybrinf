@@ -21,6 +21,7 @@ class CommandType(enum.Enum, metaclass=MetaEnum):
         For now only UpdateTabNavigation is supported
     '''
     UpdateTabNavigation = 6
+    SetSelectedNavigationIndex = 7
 
 class Command:
     '''Command class core.'''
@@ -62,6 +63,30 @@ class CommandTabNavigation(Command):
         self.index = Reader.uInt32(self.content)
         self.url_len = Reader.uInt32(self.content)
         self.url = self.content.read(self.url_len).decode('utf-8')
+
+    def __str__(self) -> str:
+        '''Get the string representation of the command'''
+        return __class__.__name__ + f'(id={self.id})'
+
+    def __repr__(self) -> str:
+        '''Get the string representation of the command'''
+        return self.__str__()
+
+class SetSelectedNavigationIndex(Command):
+    '''Command class for SetSelectedNavigationIndex'''
+
+    def __init__(self, _id: int, content: bytes):
+        '''
+        Initialize the SetSelectedNavigationIndex instance
+
+        Args:
+            id (int): The command id
+            content (bytes): The command content
+        '''
+        super().__init__(_id, content)
+        self.content = io.BytesIO(content)
+        self.tab_id = Reader.uInt32(self.content)
+        self.index = Reader.uInt32(self.content)
 
     def __str__(self) -> str:
         '''Get the string representation of the command'''

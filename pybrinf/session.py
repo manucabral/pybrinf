@@ -8,7 +8,7 @@ import os
 
 from pybrinf.parser import Parser
 from pybrinf.exceptions import SessionError
-from pybrinf.commands import CommandType, CommandTabNavigation
+from pybrinf.commands import CommandType, CommandTabNavigation, SetSelectedNavigationIndex
 
 class Session:
     '''Session class core.'''
@@ -75,3 +75,19 @@ class Session:
         commands = parser.commands
         commands = parser.filter_command(commands, CommandType.UpdateTabNavigation.value)
         return commands
+
+    def current_tab(self) -> CommandTabNavigation:
+        '''
+        Get the selected tab from the last Session file
+
+        Returns:
+            CommandTabNavigation: The selected tab from the last Session file.
+        '''
+        file_path = os.path.join(self.__path, self.__last)
+        parser = Parser(file_path)
+        commands = parser.filter_command(parser.commands, CommandType.SetSelectedNavigationIndex.value)
+        selected_tab = commands[-1]
+        tabs = self.tabs()
+        for tab in tabs:
+            if tab.tab_id == selected_tab.tab_id and tab.index == selected_tab.index:
+                return tab

@@ -9,7 +9,7 @@ import _io
 
 from pybrinf.reader import Reader
 from pybrinf.exceptions import ParserError
-from pybrinf.commands import CommandType, Command, CommandTabNavigation
+from pybrinf.commands import CommandType, Command, CommandTabNavigation, SetSelectedNavigationIndex
 
 class Parser:
     '''Parser class core.'''
@@ -78,6 +78,8 @@ class Parser:
         if command_id in CommandType:
             if command_id == CommandType.UpdateTabNavigation.value:
                 return CommandTabNavigation(command_id, command_content)
+            if command_id == CommandType.SetSelectedNavigationIndex.value:
+                return SetSelectedNavigationIndex(command_id, command_content)
             return Command(command_id, command_content)
         return None
 
