@@ -11,6 +11,8 @@ This project is just started, currently in development. Only supports **Windows*
 - Detects your default browser
 - Use any installed browser
 - Get downloads or history
+- Get browser Sessions
+- Get current browser tab
 
 ### Installation
 PyPI package is not available yet, clone it.
@@ -38,10 +40,15 @@ Get history from all installed browsers
 for website in brinf.history():
     print(website.title, website.url)
 ```
-Get last session tabs of a browser
+Get current tab in the browser
 ```py
-browser = brinf.default_browser
-session = browser.session()
+session = brinf.default_browser.session()
+tab = session.current_tab()
+print(tab.url)
+```
+Get all tabs from the last session
+```py
+session = brinf.default_browser.session()
 for tabs in session.tabs()
     print(tabs.url)
 ```
