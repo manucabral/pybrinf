@@ -1,6 +1,6 @@
 '''
 This module contains all utility functions used in PyBrinf.
-TODO: Add more browsers and linux / macos support.
+TODO: Add linux and macos support.
 '''
 
 from datetime import datetime, timedelta
@@ -17,9 +17,11 @@ class Utilities:
     '''Utilities class for PyBrinf.'''
 
     BROWSERS = BROWSERS
-    DEFAULT_BROWSER_KEY = 'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
     SUPPORTED_SYSTEMS = ['Windows']
     SUPPORTED_BROWSERS = ['chrome', 'edge', 'yandex', 'firefox', 'opera', 'brave', 'vivaldi']
+    DEFAULT_BROWSER_KEY = \
+        'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
+
     KILL_PROCESS = 'taskkill /f /im {}'
     SEARCH_PROCESS = 'WMIC PROCESS WHERE "name=\'{}\'" GET ExecutablePath'
     SEARCH_TITLE = 'tasklist /fi "imagename eq {}" /fo list /v'
