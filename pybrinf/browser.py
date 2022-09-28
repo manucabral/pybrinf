@@ -88,6 +88,28 @@ class Browser:
         return self.__fullname
 
     @property
+    def version(self) -> str:
+        '''
+        Get the version of the browser.
+
+        Raises:
+            BrowserError: If the browser is not installed or cannot get the version.
+        '''
+        if not self.installed:
+            raise BrowserError('The browser is not installed.')
+        try:
+            path = self.app_path.split('\\')[:-1]
+            files = os.listdir('\\'.join(path))
+            for file in files:
+                if re.match(r'\d+\.\d+\.\d+\.\d+', file):
+                    return file
+            # no chromium based browser
+            res = subprocess.check_output([self.app_path, '--version'])
+            return res.decode('utf-8').rsplit(' ', maxsplit=1)[-1]
+        except Exception as exc:
+            raise BrowserError('Unknown error while getting the browser version.') from exc
+
+    @property
     def path(self) -> str:
         '''
         Get the full path of the browser.
