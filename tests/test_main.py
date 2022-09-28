@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 from pybrinf.__main__ import Brinf
 from pybrinf.browser import Browser
-from pybrinf.exceptions import BrowserNotFound, BrinfNotInitialized
+from pybrinf.exceptions import BrowserError, BrinfError
 from pybrinf.item import History, Downloaded
 
 '''All tests for Brinf module.'''
@@ -28,14 +28,14 @@ class TestBrinf(unittest.TestCase):
         self.assertIsInstance(browser, Browser)
 
     def test_get_default_browser_no_init(self):
-        '''> Should raise a BrinfNotInitialized exception.'''
+        '''> Should raise a BrinfError exception.'''
         self.brinf.reset()
-        with self.assertRaises(BrinfNotInitialized):
+        with self.assertRaises(BrinfError):
             self.brinf.default_browser
     
     def test_get_invalid_browser(self):
-        '''> Should raise a BrowserNotFound exception.'''
-        with self.assertRaises(BrowserNotFound):
+        '''> Should raise a BrowserError exception.'''
+        with self.assertRaises(BrowserError):
             self.brinf.browser('chrofox')
     
     def test_get_installed_browsers(self):
@@ -47,9 +47,9 @@ class TestBrinf(unittest.TestCase):
             self.assertEqual(browser.installed, True)
     
     def test_get_installed_browsers_no_init(self):
-        '''> Should raise a BrinfNotInitialized exception.'''
+        '''> Should raise a BrinfError exception.'''
         self.brinf.reset()
-        with self.assertRaises(BrinfNotInitialized):
+        with self.assertRaises(BrinfError):
             self.brinf.installed_browsers()
     
     def test_supported_browsers(self):
@@ -66,9 +66,9 @@ class TestBrinf(unittest.TestCase):
         self.assertEqual(len(history), 3 * len(browsers))
 
     def test_get_history_no_init(self):
-        '''> Should raise a BrinfNotInitialized exception.'''
+        '''> Should raise a BrinfError exception.'''
         self.brinf.reset()
-        with self.assertRaises(BrinfNotInitialized):
+        with self.assertRaises(BrinfError):
             self.brinf.history()
     
     def test_get_downloads(self):
