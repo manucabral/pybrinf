@@ -57,6 +57,10 @@ Get all installed browsers in your system
 ```py
 browsers = brinf.installed_browsers()
 ```
+Use another installed browser
+```py
+opera = brinf.browser('opera')
+```
 
 Check out the [wiki](https://github.com/manucabral/pybrinf/wiki) for more details.
 
