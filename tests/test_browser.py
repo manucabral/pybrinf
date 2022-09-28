@@ -2,6 +2,7 @@ import unittest
 from pybrinf.__main__ import Brinf
 from pybrinf.browser import Browser
 from pybrinf.session import Session
+from pybrinf.item import History, Downloaded
 from pybrinf.exceptions import BrowserError
 
 '''All tests for Browser module.'''
@@ -63,10 +64,27 @@ class TestBrowser(unittest.TestCase):
         running = self.browser.running
         self.assertEqual(running, False)
 
-    def get_browser_session(self):
+    def test_get_browser_session(self):
         '''> Should return a Session object.'''
         session = self.browser.session()
         self.assertIsInstance(session, Session)
+    
+    def test_get_browser_history(self):
+        '''> Should return a list of History objects.'''
+        browser = self.brinf.browser('yandex')
+        history = browser.history(limit=2)
+        self.assertIsInstance(history, list)
+        self.assertIsInstance(history[0], History)
+        self.assertEqual(len(history), 2)
+    
+    def test_get_browser_downloads(self):
+        '''> Should return a list of Download objects.'''
+        # Using a browser what has downloads.
+        browser = self.brinf.browser('yandex')
+        downloads = browser.downloads(limit=2)
+        self.assertIsInstance(downloads, list)
+        self.assertIsInstance(downloads[0], Downloaded)
+        self.assertEqual(len(downloads), 2)
 
 if __name__ == '__main__':
     unittest.main()
