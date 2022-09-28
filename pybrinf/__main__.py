@@ -131,7 +131,7 @@ class Brinf:
             raise BrinfError('The Brinf instance is not initialized.')
         return self.__browser
 
-    def history(self, reverse: bool=True, **kwargs) -> [History]:
+    def history(self, reverse: bool=True, **kwargs) -> list[History]:
         '''
         Get the history of all browsers.
         IMPORTANT: Please limit the number of results to avoid performance issues.
@@ -157,7 +157,7 @@ class Brinf:
             history += browser_websites
         return sorted(history, key=lambda x: Utilities.date_to_int(x.last_visit), reverse=reverse)
 
-    def downloads(self, reverse: bool=True, **kwargs) -> [Downloaded]:
+    def downloads(self, reverse: bool=True, **kwargs) -> list[Downloaded]:
         '''
         Get the downloads of all browsers.
         IMPORTANT: Please limit the number of results to avoid performance issues.

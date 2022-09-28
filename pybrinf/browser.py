@@ -217,7 +217,7 @@ class Browser:
         except Exception as exc:
             raise BrowserError('Unknown error while closing the browser.') from exc
 
-    def downloads(self, **kwargs) -> [Downloaded]:
+    def downloads(self, **kwargs) -> list[Downloaded]:
         '''
         Get the list of downloaded items from the browser.
 
@@ -238,7 +238,7 @@ class Browser:
         db_history.close()
         return downloads
 
-    def history(self, **kwargs) -> [History]:
+    def history(self, **kwargs) -> list[History]:
         '''
         Get the list of history items from the browser.
 
