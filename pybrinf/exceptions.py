@@ -28,3 +28,8 @@ class ParserError(Exception):
     '''This exception is raised when the parser fails.'''
     def __init__(self, error: str):
         super().__init__(error)
+
+class FileError(Exception):
+    '''This exception is raised then the file handling and managements fails'''
+    def __init__(self, error: str) -> None:
+        super().__init__(error)
