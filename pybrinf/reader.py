@@ -45,3 +45,32 @@ class Reader:
             int: The read integer
         '''
         return struct.unpack(Reader.__endianess + 'B', stream.read(1))[0]
+    
+    @staticmethod
+    def string(stream: _io.BufferedReader) -> str:
+        '''
+        Read a string
+
+        Args:
+            stream (_io.BufferedReader): The stream to read from
+        Returns:
+            str: The read string
+        '''
+        length = Reader.uInt32(stream)
+        return stream.read(length).decode('utf-8', errors='ignore')
+
+    def string16(stream: _io.BufferedReader) -> str:
+        '''
+        Read a string with 16-bit length
+        Source: lemnos/chrome-session-dump
+
+        Args:
+            stream (_io.BufferedReader): The stream to read from
+        Returns:
+            str: The read string
+        '''
+        length = Reader.uInt32(stream) * 2
+        if length % 4 != 0:
+            length += 4 - (length % 4)
+            return stream.read(length).decode('utf-8', errors='ignore')
+        return 'undefined'
