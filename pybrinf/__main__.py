@@ -13,11 +13,9 @@ from pybrinf.utilities import Utilities
 from pybrinf.item import History, Downloaded
 from pybrinf.exceptions import BrowserError, BrinfError, SystemBrinfError
 
-#pylint: disable=wrong-import-error
 # TODO: Add support for Linux and check some methods that uses winreg
 if Utilities.system() == 'Windows':
     import winreg
-#pylint: enable=wrong-import-error
 
 class Brinf:
     '''Main class for PyBrinf.'''

@@ -1,2 +1,2 @@
 [MASTER]
-disable= R1732, W0511, C0103
+disable= R1732, W0511, C0103, E0401
