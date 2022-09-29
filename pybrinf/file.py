@@ -1,7 +1,7 @@
 # pylint: skip-file
 '''
 Implementation of file management to export data to JSON file.
-NOTE: Module is in alpha development
+NOTE: Module is in alpha development.
 '''
 
 from json import dumps
@@ -68,16 +68,30 @@ class File:
         except Exception as err:
             raise FileError('Error while creating the file') from err
     
-    def delete(self, filename: str) -> ...:
+    def delete(self, file: str) -> None:
         '''
         Delete a file
 
         Args:
             filename (str): Any good file name.
         Returns:
-            Ellipsis
+            None
         '''
         try:
-            return remove(filename) if exists(filename) else FileNotFoundError
+            if self.existence(file) == True:
+                remove(file)
+            else:
+                pass
         except Exception as err:
             raise FileError('Error while deleting the file') from err
+    
+    def existence(self, filename: str) -> str:
+        '''
+        Verify if file exists
+
+        Args:
+            filename (str): File name.
+        Returns:
+            str: Message if exists or no.
+        '''
+        return True if exists(filename) else print(f'{filename} doesnt exists.')
