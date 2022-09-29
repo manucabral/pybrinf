@@ -61,8 +61,8 @@ class CommandTabNavigation(Command):
         self.payload_size = Reader.uInt32(self.content)
         self.tab_id = Reader.uInt32(self.content)
         self.index = Reader.uInt32(self.content)
-        self.url_len = Reader.uInt32(self.content)
-        self.url = self.content.read(self.url_len).decode('utf-8')
+        self.url = Reader.string(self.content)
+        self.title = Reader.string16(self.content)
 
     def __str__(self) -> str:
         '''Get the string representation of the command'''
