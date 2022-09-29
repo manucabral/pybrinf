@@ -3,6 +3,7 @@ This module contains all utility functions used in PyBrinf.
 TODO: Add linux and macos support.
 '''
 
+import platform
 from datetime import datetime, timedelta
 from pybrinf.exceptions import BrowserError
 from pybrinf.browsers import BROWSERS
@@ -25,6 +26,16 @@ class Utilities:
     KILL_PROCESS = 'taskkill /f /im {}'
     SEARCH_PROCESS = 'WMIC PROCESS WHERE "name=\'{}\'" GET ExecutablePath'
     SEARCH_TITLE = 'tasklist /fi "imagename eq {}" /fo list /v'
+
+    @staticmethod
+    def system() -> str:
+        '''
+        Get the system name.
+
+        Returns:
+            str: The system name, e.g. Windows, Linux, etc.
+        '''
+        return platform.system()
 
     @staticmethod
     def set_filter(query: str, **kwargs) -> str:
