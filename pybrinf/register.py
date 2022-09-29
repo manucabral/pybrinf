@@ -4,7 +4,13 @@ This module uses winreg to read the registry.
 Docstrings are written in Google style.
 '''
 
-import winreg
+from pybrinf.exceptions import BrinfError
+from pybrinf.utilities import Utilities
+
+if Utilities.system() == 'Windows':
+    import winreg
+else:
+    raise BrinfError('This module only works on Windows.')
 
 class Register:
     '''Register class core'''

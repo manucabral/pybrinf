@@ -5,8 +5,6 @@
 '''
 
 import re
-import winreg
-import platform
 from typing import Union
 
 from pybrinf.browser import Browser
@@ -15,11 +13,15 @@ from pybrinf.utilities import Utilities
 from pybrinf.item import History, Downloaded
 from pybrinf.exceptions import BrowserError, BrinfError, SystemBrinfError
 
+# TODO: Add support for Linux and check some methods that uses winreg
+if Utilities.system() == 'Windows':
+    import winreg
+
 class Brinf:
     '''Main class for PyBrinf.'''
     __initialize = False
     __browser = None
-    __os = platform.system()
+    __os = Utilities.system()
 
     def __init__(self):
         '''Initialize the Brinf instance.'''

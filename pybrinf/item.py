@@ -4,10 +4,11 @@ The Item class is used to store different types of items (Downloads, History, et
 Docstrings are written in Google style.
 '''
 
-import os
-
 from pybrinf.exceptions import SystemBrinfError
 from pybrinf.utilities import Utilities
+
+if Utilities.system() == 'Windows':
+    import os
 
 class Item:
     '''Simulates a simple item.'''
@@ -50,13 +51,16 @@ class Downloaded(Item):
         '''Compare the downloaded item with another downloaded item.'''
         return self.url == other.url and self.path == other.path
 
+    # NOTE: Exclude until Linux support is added
     def open(self) -> None:
-        '''Open the downloaded item directory.'''
-        try:
-            os.startfile(self.path.replace(self.path.split('\\')[-1], ''))
-        except Exception as exc:
-            raise SystemBrinfError(exc) from exc
-
+        '''Open the downloaded file.'''
+        if Utilities.system() == 'Windows':
+            try:
+                os.startfile(self.path.replace(self.path.split('\\')[-1], ''))
+            except Exception as exc:
+                raise SystemBrinfError(exc) from exc
+        else:
+            raise SystemBrinfError('Unsupported platform')
 
 class History(Item):
     '''Simulates a history item.'''
