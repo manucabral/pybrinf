@@ -217,7 +217,7 @@ class Browser:
             raise BrowserError('The browser is not installed.')
         if not self.__chromium:
             raise BrowserError('Only chromium based browsers are supported.')
-        session = Session(self.path)
+        session = Session(self.path, self.fullname)
         return session
 
     def close(self) -> True:

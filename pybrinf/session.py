@@ -8,12 +8,13 @@ import os
 
 from pybrinf.parser import Parser
 from pybrinf.exceptions import SessionError
-from pybrinf.commands import CommandType, CommandTabNavigation, SetSelectedNavigationIndex
+from pybrinf.item import Tab
+from pybrinf.commands import CommandType
 
 class Session:
     '''Session class core.'''
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, browser: str):
         '''
         Initialize the Session instance.
 
@@ -23,6 +24,7 @@ class Session:
             SessionError: If the path is not a valid Session folder.
         '''
         self.__path = path + '\\Sessions'
+        self.browser = browser
         if not self.__exists:
             raise SessionError('Sessions folder not found')
 
@@ -63,7 +65,47 @@ class Session:
         '''
         return self.__last
 
-    def tabs(self) -> list[CommandTabNavigation]:
+    def __parse_tabs(self, *args) -> list[Tab]:
+        '''
+        Parse the tab from the UpdateTabNavigation commands and return a list of Tab objects.
+        More friendly to use than the CommandTabNavigation object.
+
+        Args:
+            tab_navigations (list[UpdateTabNavigation]): UpdateTabNavigation commands.
+            pinned_states (list[SetPinnedState]): SetPinnedState commands.
+            selected_tab (SetSelectedNavigationIndex): SetSelectedNavigationIndex command.
+        Returns:
+            Tab: The parsed tabs.
+        '''
+        tabs = []
+        tab_navigations = args[0]
+        pinned_states = args[1]
+        selected_tab = args[2]
+        for command in tab_navigations:
+            tab = Tab(self.browser, command.tab_id, command.index, command.url, command.title)
+            for pinned_state in pinned_states:
+                tab.pinned = pinned_state.tab_id == command.tab_id
+            tab.active = tab.id == selected_tab.tab_id
+            tabs.append(tab)
+        return tabs
+
+    def __remove_repeated_tabs(self, tabs: list[Tab]) -> list[Tab]:
+        '''
+        Remove repeated tabs from the list of tabs
+
+        Args:
+            tabs (list[Tab]): The tabs to remove the repeated tabs.
+
+        Returns:
+            list[Tab]: The tabs without repeated tabs.
+        '''
+        new_tabs = []
+        for tab in tabs:
+            if tab.id not in [new_tab.id for new_tab in new_tabs]:
+                new_tabs.append(tab)
+        return new_tabs
+
+    def tabs(self) -> list[Tab]:
         '''
         Get all tabs from the last Session file
 
@@ -73,21 +115,18 @@ class Session:
         file_path = os.path.join(self.__path, self.__last)
         parser = Parser(file_path)
         commands = parser.commands
-        commands = parser.filter_command(commands, CommandType.UpdateTabNavigation.value)
-        return commands
+        tab_navs = parser.filter_command(commands, CommandType.UpdateTabNavigation.value)
+        pinned_states = parser.filter_command(commands, CommandType.SetPinnedState.value)
+        selected_nav = parser.filter_command(commands, CommandType.SetSelectedNavigationIndex.value)
+        tabs = self.__parse_tabs(tab_navs, pinned_states, selected_nav[-1])
+        return self.__remove_repeated_tabs(tabs)
 
-    def current_tab(self) -> CommandTabNavigation:
+    @property
+    def current_tab(self) -> Tab:
         '''
-        Get the selected tab from the last Session file
+        Get the current tab from the last Session file
 
         Returns:
-            CommandTabNavigation: The selected tab from the last Session file.
+            Tab: The current tab from the last Session file.
         '''
-        file_path = os.path.join(self.__path, self.__last)
-        parser = Parser(file_path)
-        commands = parser.filter_command(parser.commands, CommandType.SetSelectedNavigationIndex.value)
-        selected_tab = commands[-1]
-        tabs = self.tabs()
-        for tab in tabs:
-            if tab.tab_id == selected_tab.tab_id and tab.index == selected_tab.index:
-                return tab
+        return [tab for tab in self.tabs() if tab.active][0]

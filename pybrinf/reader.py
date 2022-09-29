@@ -63,11 +63,13 @@ class Reader:
         '''
         Read a string with 16-bit length
         Source: lemnos/chrome-session-dump
+        TODO: Finish this :p
 
         Args:
             stream (_io.BufferedReader): The stream to read from
         Returns:
             str: The read string
+            
         '''
         length = Reader.uInt32(stream) * 2
         if length % 4 != 0:

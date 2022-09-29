@@ -9,7 +9,14 @@ import _io
 
 from pybrinf.reader import Reader
 from pybrinf.exceptions import ParserError
-from pybrinf.commands import CommandType, Command, CommandTabNavigation, SetSelectedNavigationIndex
+from pybrinf.commands import (
+    CommandType,
+    Command,
+    CommandTabNavigation,
+    SetSelectedNavigationIndex,
+    TabClosed,
+    SetPinnedState
+)
 
 class Parser:
     '''Parser class core.'''
@@ -79,6 +86,12 @@ class Parser:
                 return CommandTabNavigation(command_id, command_content)
             if command_id == CommandType.SetSelectedNavigationIndex.value:
                 return SetSelectedNavigationIndex(command_id, command_content)
+            if command_id == CommandType.TabClosed.value:
+                return TabClosed(command_id, command_content)
+            if command_id == CommandType.SetPinnedState.value:
+                # Exclude the command if the tab is not pinned
+                cmd = SetPinnedState(command_id, command_content)
+                return cmd if cmd.pinned else None
             return Command(command_id, command_content)
         return None
 

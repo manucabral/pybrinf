@@ -18,10 +18,13 @@ class MetaEnum(enum.EnumMeta):
 class CommandType(enum.Enum, metaclass=MetaEnum):
     '''
         Enum for SNSS command types
-        For now only UpdateTabNavigation is supported
+        Source: https://source.chromium.org/chromium/chromium/src/+/main:components/sessions/core/session_service_commands.cc        
     '''
     UpdateTabNavigation = 6
     SetSelectedNavigationIndex = 7
+    SetSelectedTabInIndex = 8
+    SetPinnedState = 12
+    TabClosed = 16
 
 class Command:
     '''Command class core.'''
@@ -87,6 +90,77 @@ class SetSelectedNavigationIndex(Command):
         self.content = io.BytesIO(content)
         self.tab_id = Reader.uInt32(self.content)
         self.index = Reader.uInt32(self.content)
+
+    def __str__(self) -> str:
+        '''Get the string representation of the command'''
+        return __class__.__name__ + f'(id={self.id})'
+
+    def __repr__(self) -> str:
+        '''Get the string representation of the command'''
+        return self.__str__()
+
+class SetSelectedTabInIndex(Command):
+    '''Command class for SetSelectedTabInIndex'''
+
+    def __init__(self, _id: int, content: bytes):
+        '''
+        Initialize the SetSelectedTabInIndex instance
+
+        Args:
+            id (int): The command id
+            content (bytes): The command content
+        '''
+        super().__init__(_id, content)
+        self.content = io.BytesIO(content)
+        self.index = Reader.uInt32(self.content)
+
+    def __str__(self) -> str:
+        '''Get the string representation of the command'''
+        return __class__.__name__ + f'(id={self.id})'
+
+    def __repr__(self) -> str:
+        '''Get the string representation of the command'''
+        return self.__str__()
+
+class SetPinnedState(Command):
+    '''Command class for SetPinnedState'''
+
+    def __init__(self, _id: int, content: bytes):
+        '''
+        Initialize the SetPinnedState instance
+
+        Args:
+            id (int): The command id
+            content (bytes): The command content
+        '''
+        super().__init__(_id, content)
+        self.content = io.BytesIO(content)
+        self.tab_id = Reader.uInt32(self.content)
+        self.pinned = Reader.uInt32(self.content)
+
+    def __str__(self) -> str:
+        '''Get the string representation of the command'''
+        return __class__.__name__ + f'(id={self.id})'
+
+    def __repr__(self) -> str:
+        '''Get the string representation of the command'''
+        return self.__str__()
+
+
+class TabClosed(Command):
+    '''Command class for TabClosed'''
+
+    def __init__(self, _id: int, content: bytes):
+        '''
+        Initialize the TabClosed instance
+
+        Args:
+            id (int): The command id
+            content (bytes): The command content
+        '''
+        super().__init__(_id, content)
+        self.content = io.BytesIO(content)
+        self.tab_id = Reader.uInt32(self.content)
 
     def __str__(self) -> str:
         '''Get the string representation of the command'''

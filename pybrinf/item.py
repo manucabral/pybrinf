@@ -27,9 +27,6 @@ class Item:
     def __eq__(self, other: object) -> bool:
         '''Compare the item with another item.'''
 
-    def open(self) -> None:
-        '''Open the item.'''
-
 class Downloaded(Item):
     '''Simulates a downloaded item.'''
 
@@ -78,3 +75,17 @@ class History(Item):
     def __eq__(self, other: object) -> bool:
         '''Compare the history item with another history item.'''
         return self.url == other.url and self.title == other.title
+
+class Tab(Item):
+    '''Simulates a tab.'''
+
+    def __init__(self, *args):
+        '''Initialize the Tab instance.'''
+        super().__init__(args[0])
+        self.id = args[1]
+        self.index = args[2]
+        self.url = args[3]
+        self.title = args[4]
+        self.pinned = False
+        self.closed = False
+        self.active = False
