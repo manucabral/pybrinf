@@ -76,6 +76,10 @@ class History(Item):
         '''Compare the history item with another history item.'''
         return self.url == other.url and self.title == other.title
 
+    def is_from(self, domain: str) -> bool:
+        '''Check if the tab is from a specific domain.'''
+        return domain in self.url
+
 class Tab(Item):
     '''Simulates a tab.'''
 
@@ -89,3 +93,12 @@ class Tab(Item):
         self.pinned = False
         self.closed = False
         self.active = False
+
+    def __eq__(self, other: object) -> bool:
+        '''Compare the tab with another tab.'''
+        return self.id == other.id and self.url == other.url
+
+    @property
+    def title(self) -> str:
+        '''Get the tab title.'''
+        return 'Untitled' if self.title == 'undefined' else self.title
