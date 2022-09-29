@@ -66,7 +66,6 @@ class Parser:
     def __identify_command(self, command_id: int, command_content: bytes) -> Command:
         '''
         Identify the command type from a command id
-        NOTE: For now only UpdateTabNavigation is supported.
         TODO: Implement other command types support.
 
         Args:
