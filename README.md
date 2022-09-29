@@ -40,10 +40,10 @@ Get history from all installed browsers
 for website in brinf.history():
     print(website.title, website.url)
 ```
-Get current tab in the browser
+Get active tab in the browser
 ```py
 session = brinf.default_browser.session()
-tab = session.current_tab()
+tab = session.current_tab
 print(tab.url)
 ```
 Get all tabs from the last session
