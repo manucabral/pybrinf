@@ -137,6 +137,8 @@ class Utilities:
         Returns:
             datetime: The datetime object.
         '''
+        if not unix:
+            return datetime.now()
         unix_time = unix / 1000000
         epoch = datetime.utcfromtimestamp(0)
         return epoch + timedelta(seconds=unix_time)
