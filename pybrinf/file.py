@@ -85,4 +85,12 @@ class File:
             raise FileError('Error while deleting the file') from err
     
     def existence(self, filename: str) -> str:
+        '''
+        Verify if file exists
+
+        Args:
+            filename (str): File name.
+        Returns:
+            str: Message if exists or no.
+        '''
         return True if exists(filename) else print(f'{filename} doesnt exists.')
