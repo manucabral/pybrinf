@@ -18,7 +18,8 @@ class MetaEnum(enum.EnumMeta):
 class CommandType(enum.Enum, metaclass=MetaEnum):
     '''
         Enum for SNSS command types
-        Source: https://source.chromium.org/chromium/chromium/src/+/main:components/sessions/core/session_service_commands.cc        
+        Source:
+        https://source.chromium.org/chromium/chromium/src/+/main:components/sessions/core/session_service_commands.cc
     '''
     UpdateTabNavigation = 6
     SetSelectedNavigationIndex = 7

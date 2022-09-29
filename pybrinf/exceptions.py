@@ -1,35 +1,21 @@
 '''This module contains all the exceptions used in PyBrinf.'''
 
 class SystemBrinfError(Exception):
-    '''The exception is raised when a system error occurs.'''
-    def __init__(self, error: str):
-        super().__init__(error)
+    '''Raise when a system error occurs.'''
 class BrinfError(Exception):
-    '''This exception is raised when a error occurs in the Brinf module.'''
-    def __init__(self, error: str):
-        super().__init__(error)
+    '''Raise when a error occurs in the Brinf module.'''
 
 class DatabaseError(Exception):
-    '''This exception is raised when a error occurs in the database module.'''
-    def __init__(self, error: str):
-        super().__init__(error)
+    '''Raise when a error occurs in the database module.'''
 
 class BrowserError(Exception):
-    '''This exception is raised when a error occurs from the browser.'''
-    def __init__(self, error: str):
-        super().__init__(error)
+    '''Raise when a error occurs from the browser.'''
 
 class SessionError(Exception):
-    '''This exception is raised when a session error occurs.'''
-    def __init__(self, error: str):
-        super().__init__(error)
+    '''Raise when a session error occurs.'''
 
 class ParserError(Exception):
-    '''This exception is raised when the parser fails.'''
-    def __init__(self, error: str):
-        super().__init__(error)
+    '''Raise when the parser fails.'''
 
 class FileError(Exception):
-    '''This exception is raised then the file handling and managements fails'''
-    def __init__(self, error: str) -> None:
-        super().__init__(error)
+    '''Raise then the file handling and managements fails'''
