@@ -1,2 +1,3 @@
 [MASTER]
-disable= R1732, W0511, C0103, E0401
+# If linux and mac support added, remove E0401 and E1101
+disable= R1732, W0511, C0103, E0401 , E1101
