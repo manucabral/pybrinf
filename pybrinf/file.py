@@ -1,3 +1,4 @@
+# pylint: skip-file
 '''
 Implementation of file management to export data to JSON file.
 NOTE: Module is in alpha development
