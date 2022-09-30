@@ -14,7 +14,7 @@ from pybrinf.item import History, Downloaded
 from pybrinf.exceptions import BrowserError, BrinfError, SystemBrinfError
 
 # TODO: Add support for Linux and check some methods that uses winreg
-if Utilities.system() == 'Windows':
+if Utilities.system() == 'win32':
     import winreg
 
 class Brinf:
@@ -29,37 +29,27 @@ class Brinf:
         self.__utils = Utilities()
 
     @property
-    def __progid(self) -> str:
+    def __default_win_browser(self) -> dict:
         '''
-        Get the progid value from the registry.
+        Get the default browser of Windows system.
 
         Raises:
             FileNotFoundError: The registry key could not be found.
-        Returns:
-            str: The progid value of the default browser.
+            BrowserError: The default browser could not be found.
         '''
-        try:
+        if self.__os == 'win32':
             hkey = winreg.HKEY_CURRENT_USER
             key = self.__register.openkey(hkey, self.__utils.DEFAULT_BROWSER_KEY)
-            return self.__register.extract(key, 'ProgId')
-        except FileNotFoundError:
-            return None
+            progid = self.__register.extract(key, 'ProgId')
+            for browser in self.__utils.BROWSERS:
+                if re.search(browser['name'], progid, re.IGNORECASE):
+                    return browser
+            raise BrowserError('The default browser could not be found.')
+        return {}
 
-    def __detect_browser(self, progid: str) -> {}:
-        '''
-        Detect the browser from the progid.
-
-        Args:
-            progid (str): The progid of the browser.
-        Raises:
-            BrowserError: The browser could not be detected.
-        Returns:
-            dict: The browser information.
-        '''
-        for browser in self.__utils.BROWSERS:
-            if re.search(browser.get('name'), progid, re.IGNORECASE):
-                return browser
-        raise BrowserError('The browser could not be detected.')
+    @property
+    def __default_linux_browser(self) -> dict:
+        '''Get the default browser of Linux system.'''
 
     def init(self) -> None:
         '''
@@ -71,12 +61,12 @@ class Brinf:
         '''
         if self.__os not in self.__utils.SUPPORTED_SYSTEMS:
             raise SystemBrinfError(f'System {self.__os} is not supported.')
-        key = self.__progid
-        if key:
-            self.__browser = Browser(**self.__detect_browser(key))
-            self.__initialize = True
-        else:
-            raise BrowserError('The default browser could not be found.')
+        detector = {
+            'win32': self.__default_win_browser,
+            'linux': self.__default_linux_browser
+        }
+        self.__browser = Browser(**detector[self.__os])
+        self.__initialize = True
 
     def reset(self) -> None:
         '''Reset the Brinf instance.'''

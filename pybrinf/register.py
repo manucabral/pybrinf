@@ -7,7 +7,7 @@ Docstrings are written in Google style.
 from pybrinf.exceptions import BrinfError
 from pybrinf.utilities import Utilities
 
-if Utilities.system() == 'Windows':
+if Utilities.system() == 'win32':
     import winreg
 else:
     raise BrinfError('This module only works on Windows.')

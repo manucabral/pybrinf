@@ -3,7 +3,7 @@ This module contains all utility functions used in PyBrinf.
 TODO: Add linux and macos support.
 '''
 
-import platform
+import sys
 from datetime import datetime, timedelta
 from pybrinf.exceptions import BrowserError
 from pybrinf.browsers import BROWSERS
@@ -18,7 +18,7 @@ class Utilities:
     '''Utilities class for PyBrinf.'''
 
     BROWSERS = BROWSERS
-    SUPPORTED_SYSTEMS = ['Windows']
+    SUPPORTED_SYSTEMS = ['win32']
     SUPPORTED_BROWSERS = ['chrome', 'edge', 'yandex', 'firefox', 'opera', 'brave', 'vivaldi']
     DEFAULT_BROWSER_KEY = \
         'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
@@ -33,9 +33,9 @@ class Utilities:
         Get the system name.
 
         Returns:
-            str: The system name, e.g. Windows, Linux, etc.
+            str: The system name, e.g. win32, linux, etc
         '''
-        return platform.system()
+        return sys.platform
 
     @staticmethod
     def set_filter(query: str, **kwargs) -> str:
