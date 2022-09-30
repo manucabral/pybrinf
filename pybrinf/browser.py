@@ -98,8 +98,8 @@ class Browser:
         if not self.installed:
             raise BrowserError('The browser is not installed.')
         try:
-            path = self.app_path.split('\\')[:-1]
-            files = os.listdir('\\'.join(path))
+            path = self.app_path.split('/')[:-1]
+            files = os.listdir('/'.join(path))
             for file in files:
                 if re.match(r'\d+\.\d+\.\d+\.\d+', file):
                     return file
@@ -117,15 +117,15 @@ class Browser:
         Raises:
             BrowserError: If the browser is not installed.
         '''
-        base = self.__local_path.split('\\')[0]
-        path = self.__local_path.replace(base, os.environ.get(base))
+        base, path = self.__local_path.split('/', 1)
+        path = os.path.join(os.environ[base], path)
         if self.__chromium:
             return path
         # for now only firefox is supported
         try:
-            with open(f'{path}\\profiles.ini', 'r', encoding='utf-8') as file:
+            with open(f'{path}/profiles.ini', 'r', encoding='utf-8') as file:
                 profile = file.readlines()[1].split('=')[1]
-                path += "\\Profiles\\" + profile.split('/')[1].strip()
+                path += '/Profiles/' + profile.split('/')[1].strip()
         except Exception as exc:
             raise BrowserError('Error while getting the profile path.') from exc
         return path
@@ -139,8 +139,8 @@ class Browser:
             BrowserError: If the browser is not installed.
         '''
         try:
-            base = self.__app_path.split('\\')[0]
-            return self.__app_path.replace(base, os.environ.get(base))
+            base, path = self.__app_path.split('/', 1)
+            return os.path.join(os.environ[base], path)
         except Exception as exc:
             raise BrowserError('Error while getting the app path.') from exc
 
