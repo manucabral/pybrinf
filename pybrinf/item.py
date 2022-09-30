@@ -103,6 +103,6 @@ class Tab(Item):
         return self.id == other.id and self.url == other.url
 
     @property
-    def title(self) -> str:
-        '''Get the tab title.'''
-        return 'Untitled' if self.title == 'undefined' else self.title
+    def is_active(self) -> bool:
+        '''Check if the tab is active.'''
+        return self.active
