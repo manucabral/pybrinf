@@ -48,51 +48,93 @@ BROWSERS = [
     {
         'name': 'Edge',
         'fullname': 'Microsoft Edge',
-        'process': 'msedge.exe',
+        'process': {
+            'win32': 'msedge.exe'
+        },
         'progid': 'EdgeHTML',
         'chromium': True,
-        'app_path': 'ProgramFiles(x86)/Microsoft/Edge/Application/msedge.exe',
-        'local_path': 'LOCALAPPDATA/Microsoft/Edge/User Data/Default',
+        'app_path': {
+            'win32': 'ProgramFiles(x86)/Microsoft/Edge/Application/msedge.exe',
+        },
+        'local_path': {
+            'win32': 'LOCALAPPDATA/Microsoft/Edge/User Data/Default',
+        },
         'os_support': ['win32']
     },
     {
         'name': 'Yandex',
         'fullname': 'Yandex Browser',
-        'process': 'browser.exe',
+        'process': {
+            'win32': 'browser.exe',
+            'linux': 'yandex-browser'
+        },
         'chromium': True,
         'progid': 'YandexHTML',
-        'app_path': 'LOCALAPPDATA/Yandex/YandexBrowser/Application/browser.exe',
-        'local_path': 'LOCALAPPDATA/Yandex/YandexBrowser/User Data/Default',
+        'app_path': {
+            'win32': 'LOCALAPPDATA/Yandex/YandexBrowser/Application/browser.exe',
+            'linux': 'HOME/usr/bin/yandex-browser'
+        },
+        'local_path': {
+            'win32': 'LOCALAPPDATA/Yandex/YandexBrowser/User Data/Default',
+            'linux': 'HOME/.config/yandex-browser-beta'
+        },
         'os_support': ['win32']
     },
     {
         'name': 'Opera',
         'fullname': 'Opera',
-        'process': 'opera.exe',
+        'process': {
+            'win32': 'opera.exe',
+            'linux': 'opera'
+        },
         'chromium': True,
         'progid': 'OperaHTML',
-        'app_path': 'LOCALAPPDATA/Programs/Opera/launcher.exe',
-        'local_path': 'APPDATA/Opera Software/Opera Stable',
+        'app_path': {
+            'win32': 'LOCALAPPDATA/Programs/Opera/launcher.exe',
+            'linux': 'HOME/usr/bin/opera'
+        },
+        'local_path': {
+            'win32': 'APPDATA/Opera Software/Opera Stable',
+            'linux': 'HOME/.config/opera'
+        },
         'os_support': ['win32']
     },
     {
         'name': 'Brave',
         'fullname': 'Brave Browser',
-        'process': 'brave.exe',
+        'process': {
+            'win32': 'brave.exe',
+            'linux': 'brave-browser'
+        },
         'chromium': True,
         'progid': 'BraveHTML',
-        'app_path': 'ProgramFiles/BraveSoftware/Brave-Browser/Application/brave.exe',
-        'local_path': 'LOCALAPPDATA/BraveSoftware/Brave-Browser/User Data/Default',
+        'app_path': {
+            'win32': 'ProgramFiles/BraveSoftware/Brave-Browser/Application/brave.exe',
+            'linux': 'HOME/usr/bin/brave-browser'
+        },
+        'local_path': {
+            'win32': 'LOCALAPPDATA/BraveSoftware/Brave-Browser/User Data/Default',
+            'linux': 'HOME/.config/BraveSoftware/Brave-Browser'
+        },
         'os_support': ['win32']
     },
     {
         'name': 'Vivaldi',
         'fullname': 'Vivaldi',
-        'process': 'vivaldi.exe',
+        'process': {
+            'win32': 'vivaldi.exe',
+            'linux': 'vivaldi'
+        },
         'chromium': True,
         'progid': 'VivaldiHTML',
-        'app_path': 'LOCALAPPDATA/Vivaldi/Application/vivaldi.exe',
-        'local_path': 'LOCALAPPDATA/Vivaldi/User Data/Default',
+        'app_path': {
+            'win32': 'LOCALAPPDATA/Vivaldi/Application/vivaldi.exe',
+            'linux': 'HOME/usr/bin/vivaldi'
+        },
+        'local_path': {
+            'win32': 'LOCALAPPDATA/Vivaldi/User Data/Default',
+            'linux': 'HOME/.config/vivaldi'
+        },
         'os_support': ['win32']
     }
 ]
