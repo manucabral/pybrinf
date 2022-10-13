@@ -74,7 +74,7 @@ class Brinf:
         self.__os = 'Unknown'
         self.__browser = None
 
-    def installed_browsers(self, exclude: Union[str, list] = '') -> [Browser]:
+    def installed_browsers(self, exclude: Union[str, list] = '') -> list[Browser]:
         '''
         Get a list of installed browsers.
 
@@ -100,7 +100,7 @@ class Brinf:
         return browsers
 
     @property
-    def supported_browsers(self) -> [str]:
+    def supported_browsers(self) -> list[str]:
         '''
         Get the list of supported browsers.
 
