@@ -11,6 +11,7 @@ from pybrinf.exceptions import SessionError
 from pybrinf.item import Tab
 from pybrinf.commands import CommandType
 
+
 class Session:
     '''Session class core.'''
 
@@ -23,7 +24,7 @@ class Session:
         Raises:
             SessionError: If the path is not a valid Session folder.
         '''
-        self.__path = path + '\\Sessions'
+        self.__path = os.path.join(path, 'Sessions')
         self.browser = browser
         if not self.__exists:
             raise SessionError('Sessions folder not found')
@@ -49,7 +50,8 @@ class Session:
             str: The last Session file.
         '''
         files = os.listdir(self.__path)
-        sessions = [file.split('_') for file in files if file.startswith('Session')]
+        sessions = [file.split('_')
+                    for file in files if file.startswith('Session')]
         if not sessions:
             raise SessionError('No Session files found')
         sessions = sorted(sessions, key=lambda x: x[1], reverse=True)
@@ -82,7 +84,8 @@ class Session:
         pinned_states = args[1]
         selected_tab = args[2]
         for command in tab_navigations:
-            tab = Tab(self.browser, command.tab_id, command.index, command.url, command.title)
+            tab = Tab(self.browser, command.tab_id,
+                      command.index, command.url, command.title)
             for pinned_state in pinned_states:
                 tab.pinned = pinned_state.tab_id == command.tab_id
             tab.active = tab.id == selected_tab.tab_id
@@ -115,9 +118,12 @@ class Session:
         file_path = os.path.join(self.__path, self.__last)
         parser = Parser(file_path)
         commands = parser.commands
-        tab_navs = parser.filter_command(commands, CommandType.UpdateTabNavigation.value)
-        pinned_states = parser.filter_command(commands, CommandType.SetPinnedState.value)
-        selected_nav = parser.filter_command(commands, CommandType.SetSelectedNavigationIndex.value)
+        tab_navs = parser.filter_command(
+            commands, CommandType.UpdateTabNavigation.value)
+        pinned_states = parser.filter_command(
+            commands, CommandType.SetPinnedState.value)
+        selected_nav = parser.filter_command(
+            commands, CommandType.SetSelectedNavigationIndex.value)
         tabs = self.__parse_tabs(tab_navs, pinned_states, selected_nav[-1])
         return self.__remove_repeated_tabs(tabs)
 
