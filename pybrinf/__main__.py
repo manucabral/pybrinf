@@ -62,8 +62,8 @@ class Brinf:
             dict: The default browser.
         '''
         if self.__os == 'linux':
-            cmd = 'xdg-settings get default-web-browser'
-            process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+            process = subprocess.Popen(
+                self.__utils.LINUX_DEFAULT_BROWSER, stdout=subprocess.PIPE)
             output, error = process.communicate()
             if error:
                 raise SystemBrinfError(error)

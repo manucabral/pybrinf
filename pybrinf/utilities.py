@@ -25,6 +25,7 @@ class Utilities:
     DEFAULT_BROWSER_KEY = \
         'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
 
+    LINUX_DEFAULT_BROWSER = 'xdg-settings get default-web-browser'.split()
     KILL_PROCESS = 'taskkill /f /im {}'
     SEARCH_PROCESS = 'WMIC PROCESS WHERE "name=\'{}\'" GET ExecutablePath'
     SEARCH_TITLE = 'tasklist /fi "imagename eq {}" /fo list /v'
