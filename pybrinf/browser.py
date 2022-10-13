@@ -68,6 +68,7 @@ class Browser:
             raise BrowserError('The browser is not installed.')
         file = 'History' if self.__chromium else 'places.sqlite'
         path = os.path.join(self.path, file)
+        print(self.path)
         to_path = os.environ['TEMP'] if self.__os == 'win32' else '/tmp'
         return Database(
             path=path,
@@ -109,16 +110,15 @@ class Browser:
                     raise BrowserError(
                         'Error while getting the browser version.')
                 return output.decode('utf-8').split().pop().strip()
-
-            # TODO: a better way
-            path = self.app_path.split('/')[:-1]
+            if not self.__chromium:
+                res = subprocess.check_output([self.app_path, '--version'])
+                return res.decode('utf-8').rsplit(' ', maxsplit=1)[-1]
+            # chromium based browsers for windows
+            path = self.app_path.split('\\')[:-1]
             files = os.listdir('/'.join(path))
             for file in files:
                 if re.match(r'\d+\.\d+\.\d+\.\d+', file):
                     return file
-            # no chromium based browser
-            res = subprocess.check_output([self.app_path, '--version'])
-            return res.decode('utf-8').rsplit(' ', maxsplit=1)[-1]
         except Exception as exc:
             raise BrowserError(
                 'Unknown error while getting the browser version.') from exc
@@ -133,7 +133,7 @@ class Browser:
             BrowserError: If the browser is not installed.
         '''
         base, path = self.__local_path.split('/', 1)
-        path = os.path.join(os.environ[base], path)
+        path = os.path.join(os.environ[base], os.path.normpath(path))
         if self.__chromium:
             return path
         # for now only firefox is supported
@@ -142,7 +142,7 @@ class Browser:
                 profile = file.readlines()[1].split('=')[1]
                 if self.__os == 'win32':
                     profile = profile.split('/')[1].strip()
-                path = os.path.join(path, profile.strip())
+                path = os.path.join(path, 'Profiles', profile.strip())
         except Exception as exc:
             raise BrowserError(
                 'Error while getting the profile path.') from exc
@@ -160,7 +160,7 @@ class Browser:
             base, path = self.__app_path.split('/', 1)
             if self.__os == 'linux':
                 return os.path.join('/', path)
-            return os.path.join(os.environ[base], path)
+            return os.path.join(os.environ[base], os.path.normpath(path))
         except Exception as exc:
             raise BrowserError('Error while getting the app path.') from exc
 

@@ -122,7 +122,7 @@ class Brinf:
             exclude = list(exclude)
         browsers = []
         for browser in self.__utils.BROWSERS:
-            instance = Browser(**browser)
+            instance = Browser(self.__os, **browser)
             if instance.installed and not instance.name in exclude:
                 browsers.append(instance)
         if len(browsers) == 0:
