@@ -25,7 +25,7 @@ class Database:
             # If bypass is true, the database will be copied to a temporary directory.
             to_path = kwargs.get('to', None)
             self.__copy(self.__path, to_path)
-            self.__path = os.path.join(to_path, self.__path.split('/')[-1])
+            self.__path = os.path.join(to_path, self.__path.split(os.sep)[-1])
 
     def __copy(self, from_path: str, to_path: str) -> None:
         '''
