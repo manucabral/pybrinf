@@ -71,27 +71,27 @@ class Browser:
         print(self.path)
         to_path = os.environ['TEMP'] if self.__os == 'win32' else '/tmp'
         return Database(
-            path=path,
+            path=os.path.normpath(path),
             bypass=True,
-            to=to_path
+            to=to_path,
         )
 
-    @property
+    @ property
     def name(self) -> str:
         '''Get the name of the browser.'''
         return self.__name
 
-    @property
+    @ property
     def process(self) -> str:
         '''Get the process of the browser.'''
         return self.__process
 
-    @property
+    @ property
     def fullname(self) -> str:
         '''Get the fullname of the browser.'''
         return self.__fullname
 
-    @property
+    @ property
     def version(self) -> str:
         '''
         Get the version of the browser.
@@ -142,7 +142,9 @@ class Browser:
                 profile = file.readlines()[1].split('=')[1]
                 if self.__os == 'win32':
                     profile = profile.split('/')[1].strip()
-                path = os.path.join(path, 'Profiles', profile.strip())
+                if self.__os == 'win32':
+                    path = os.path.join(path, 'Profiles')
+                path = os.path.join(path, profile.strip())
         except Exception as exc:
             raise BrowserError(
                 'Error while getting the profile path.') from exc
