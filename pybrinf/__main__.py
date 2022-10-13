@@ -95,7 +95,7 @@ class Brinf:
             'win32': self.__default_win_browser,
             'linux': self.__default_linux_browser
         }
-        self.__browser = Browser(**detector[self.__os])
+        self.__browser = Browser(self.__os, **detector[self.__os])
         self.__initialize = True
 
     def reset(self) -> None:
@@ -224,6 +224,6 @@ class Brinf:
             raise BrowserError(f'The browser {name} is not supported.')
         try:
             data = self.__utils.get_browser_data(name)
-            return Browser(**data)
+            return Browser(self.__os, **data)
         except Exception as exc:
             raise BrowserError('The browser could not be found.') from exc
