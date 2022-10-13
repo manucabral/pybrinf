@@ -4,7 +4,7 @@ A lightweight, zero dependencies and free Python library for extract browser inf
 
 'Python Browser Information' allows you to extract, export or view basic information about your browser using the python language.
 
-This project is just started, currently in development. Only supports **Windows**.
+This project is just started, currently in development. Only supports **Windows** and **Linux**.
 
 ### Features
 - Supports [popular browsers](https://github.com/manucabral/pybrinf/wiki#supported-browsers)
