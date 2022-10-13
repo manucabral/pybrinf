@@ -8,14 +8,14 @@ import re
 from typing import Union
 
 from pybrinf.browser import Browser
-from pybrinf.register import Register
 from pybrinf.utilities import Utilities
 from pybrinf.item import History, Downloaded
 from pybrinf.exceptions import BrowserError, BrinfError, SystemBrinfError
 
-# TODO: Add support for Linux and check some methods that uses winreg
+# import some utils for Windows systems
 if Utilities.system() == 'win32':
     import winreg
+    from pybrinf.register import Register
 
 class Brinf:
     '''Main class for PyBrinf.'''
