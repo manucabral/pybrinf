@@ -15,6 +15,7 @@ from pybrinf.utilities import Utilities
 from pybrinf.session import Session
 from pybrinf.exceptions import BrowserError
 
+
 class Browser:
     '''
         Browser class core.
@@ -31,13 +32,14 @@ class Browser:
             chromium (bool): Whether the browser is a chromium based browser.
     '''
 
-    def __init__(self, **kwargs):
+    def __init__(self, os: str, **kwargs):
         '''Initialize the Browser instance.'''
+        self.__os = os
         self.__name = kwargs.get('name', None)
         self.__fullname = kwargs.get('fullname', None)
-        self.__app_path = kwargs.get('app_path', None)
-        self.__local_path = kwargs.get('local_path', None)
-        self.__process = kwargs.get('process', None)
+        self.__app_path = kwargs.get('app_path', None)[os]
+        self.__local_path = kwargs.get('local_path', None)[os]
+        self.__process = kwargs.get('process', None)[os]
         self.__chromium = kwargs.get('chromium', None)
 
     def __str__(self):
@@ -65,11 +67,12 @@ class Browser:
         if not self.installed:
             raise BrowserError('The browser is not installed.')
         file = 'History' if self.__chromium else 'places.sqlite'
-        path = self.path + '\\' + file
+        path = os.path.join(self.path, file)
+        to_path = os.environ['TEMP'] if self.__os == 'win32' else '/tmp'
         return Database(
             path=path,
             bypass=True,
-            to= os.environ.get('TEMP')
+            to=to_path
         )
 
     @property
@@ -98,16 +101,27 @@ class Browser:
         if not self.installed:
             raise BrowserError('The browser is not installed.')
         try:
-            path = self.app_path.split('/')[:-1]
-            files = os.listdir('/'.join(path))
-            for file in files:
-                if re.match(r'\d+\.\d+\.\d+\.\d+', file):
-                    return file
-            # no chromium based browser
-            res = subprocess.check_output([self.app_path, '--version'])
-            return res.decode('utf-8').rsplit(' ', maxsplit=1)[-1]
+            if self.__os == 'linux':
+                process = subprocess.Popen(
+                    [self.process, '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                output, error = process.communicate()
+                if error:
+                    raise BrowserError(
+                        'Error while getting the browser version.')
+                return output.decode('utf-8').split().pop().strip()
+            elif self.__os == 'windows':
+                # TODO: a better way
+                path = self.app_path.split('/')[:-1]
+                files = os.listdir('/'.join(path))
+                for file in files:
+                    if re.match(r'\d+\.\d+\.\d+\.\d+', file):
+                        return file
+                # no chromium based browser
+                res = subprocess.check_output([self.app_path, '--version'])
+                return res.decode('utf-8').rsplit(' ', maxsplit=1)[-1]
         except Exception as exc:
-            raise BrowserError('Unknown error while getting the browser version.') from exc
+            raise BrowserError(
+                'Unknown error while getting the browser version.') from exc
 
     @property
     def path(self) -> str:
@@ -125,9 +139,12 @@ class Browser:
         try:
             with open(f'{path}/profiles.ini', 'r', encoding='utf-8') as file:
                 profile = file.readlines()[1].split('=')[1]
-                path += '/Profiles/' + profile.split('/')[1].strip()
+                if self.__os == 'win32':
+                    profile = profile.split('/')[1].strip()
+                path = os.path.join(path, profile.strip())
         except Exception as exc:
-            raise BrowserError('Error while getting the profile path.') from exc
+            raise BrowserError(
+                'Error while getting the profile path.') from exc
         return path
 
     @property
@@ -140,6 +157,8 @@ class Browser:
         '''
         try:
             base, path = self.__app_path.split('/', 1)
+            if self.__os == 'linux':
+                return os.path.join('/', path)
             return os.path.join(os.environ[base], path)
         except Exception as exc:
             raise BrowserError('Error while getting the app path.') from exc
@@ -237,7 +256,8 @@ class Browser:
                 out, err = proc.communicate()
                 return bool(not err and out)
         except Exception as exc:
-            raise BrowserError('Unknown error while closing the browser.') from exc
+            raise BrowserError(
+                'Unknown error while closing the browser.') from exc
 
     def downloads(self, **kwargs) -> list[Downloaded]:
         '''
@@ -255,7 +275,8 @@ class Browser:
             raise BrowserError('The browser is not installed.')
         db_history = self.__history
         db_history.connect()
-        res = db_history.execute(Utilities.download_query(self.__chromium, **kwargs))
+        res = db_history.execute(
+            Utilities.download_query(self.__chromium, **kwargs))
         downloads = [Downloaded(self.fullname, *download) for download in res]
         db_history.close()
         return downloads
@@ -276,7 +297,8 @@ class Browser:
             raise BrowserError('The browser is not installed.')
         db_history = self.__history
         db_history.connect()
-        result = db_history.execute(Utilities.website_query(self.__chromium, **kwargs))
+        result = db_history.execute(
+            Utilities.website_query(self.__chromium, **kwargs))
         history = [History(self.fullname, *history) for history in result]
         db_history.close()
         return history
