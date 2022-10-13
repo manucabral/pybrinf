@@ -253,6 +253,10 @@ class Browser:
         if not self.installed:
             raise BrowserError('The browser is not installed.')
         query = Utilities.KILL_PROCESS.format(self.process)
+        if self.__os == 'linux':
+            # only google chrome
+            process = self.name.lower() if self.name == 'Chrome' else self.process
+            query = f'pkill {process}'.split()
         try:
             with subprocess.Popen(query, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
                 out, err = proc.communicate()
