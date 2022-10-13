@@ -68,7 +68,6 @@ class Browser:
             raise BrowserError('The browser is not installed.')
         file = 'History' if self.__chromium else 'places.sqlite'
         path = os.path.join(self.path, file)
-        print(self.path)
         to_path = os.environ['TEMP'] if self.__os == 'win32' else '/tmp'
         return Database(
             path=os.path.normpath(path),
