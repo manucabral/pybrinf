@@ -16,6 +16,9 @@ from pybrinf.exceptions import BrowserError, BrinfError, SystemBrinfError
 if Utilities.system() == 'win32':
     import winreg
     from pybrinf.register import Register
+elif Utilities.system() == 'linux':
+    import subprocess
+
 
 class Brinf:
     '''Main class for PyBrinf.'''
@@ -49,7 +52,34 @@ class Brinf:
 
     @property
     def __default_linux_browser(self) -> dict:
-        '''Get the default browser of Linux system.'''
+        '''
+        Get the default browser of Linux system.
+
+        Raises:
+            SystemBrinfError: A system error occurred while getting the default browser.
+            BrowserError: The default browser could not be found or is not supported.
+        Returns:
+            dict: The default browser.
+        '''
+        if self.__os == 'linux':
+            cmd = 'xdg-settings get default-web-browser'
+            process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+            output, error = process.communicate()
+            if error:
+                raise SystemBrinfError(error)
+            browser = output.decode().strip()
+            browser_data = None
+            for data in self.__utils.BROWSERS:
+                if re.search(data['name'], browser, re.IGNORECASE):
+                    browser_data = data
+                    break
+            if browser_data is None:
+                raise BrowserError('The default browser could not be found.')
+            if not self.__os in browser_data['os_support']:
+                raise BrowserError(
+                    f'{data["fullname"]} is not supported in {self.__os}. Sorry!')
+            return data
+        return {}
 
     def init(self) -> None:
         '''
@@ -123,7 +153,7 @@ class Brinf:
             raise BrinfError('The Brinf instance is not initialized.')
         return self.__browser
 
-    def history(self, reverse: bool=True, **kwargs) -> list[History]:
+    def history(self, reverse: bool = True, **kwargs) -> list[History]:
         '''
         Get the history of all browsers.
         IMPORTANT: Please limit the number of results to avoid performance issues.
@@ -149,7 +179,7 @@ class Brinf:
             history += browser_websites
         return sorted(history, key=lambda x: Utilities.date_to_int(x.last_visit), reverse=reverse)
 
-    def downloads(self, reverse: bool=True, **kwargs) -> list[Downloaded]:
+    def downloads(self, reverse: bool = True, **kwargs) -> list[Downloaded]:
         '''
         Get the downloads of all browsers.
         IMPORTANT: Please limit the number of results to avoid performance issues.
@@ -197,4 +227,3 @@ class Brinf:
             return Browser(**data)
         except Exception as exc:
             raise BrowserError('The browser could not be found.') from exc
-        
