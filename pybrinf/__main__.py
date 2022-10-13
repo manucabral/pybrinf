@@ -25,7 +25,6 @@ class Brinf:
 
     def __init__(self):
         '''Initialize the Brinf instance.'''
-        self.__register = Register()
         self.__utils = Utilities()
 
     @property
@@ -38,9 +37,10 @@ class Brinf:
             BrowserError: The default browser could not be found.
         '''
         if self.__os == 'win32':
+            register = Register()
             hkey = winreg.HKEY_CURRENT_USER
-            key = self.__register.openkey(hkey, self.__utils.DEFAULT_BROWSER_KEY)
-            progid = self.__register.extract(key, 'ProgId')
+            key = register.openkey(hkey, self.__utils.DEFAULT_BROWSER_KEY)
+            progid = register.extract(key, 'ProgId')
             for browser in self.__utils.BROWSERS:
                 if re.search(browser['name'], progid, re.IGNORECASE):
                     return browser
