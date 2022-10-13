@@ -49,15 +49,18 @@ BROWSERS = [
         'name': 'Edge',
         'fullname': 'Microsoft Edge',
         'process': {
-            'win32': 'msedge.exe'
+            'win32': 'msedge.exe',
+            'linux': 'msedge'
         },
         'progid': 'EdgeHTML',
         'chromium': True,
         'app_path': {
             'win32': 'ProgramFiles(x86)/Microsoft/Edge/Application/msedge.exe',
+            'linux': 'sure?'
         },
         'local_path': {
             'win32': 'LOCALAPPDATA/Microsoft/Edge/User Data/Default',
+            'linux': 'sure?'
         },
         'os_support': ['win32']
     },
