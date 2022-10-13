@@ -1,27 +1,48 @@
 '''
 This file contains all browser necessary data.
-NOTE: For now only supports Windows Systems.
+NOTE:
+    Windows supports all browsers.
+    Linux only supports Chrome and Firefox.
+    MacOS not supported yet.
 '''
 
 BROWSERS = [
     {
         'name': 'Chrome',
         'fullname': 'Google Chrome',
-        'process': 'chrome.exe',
+        'process': {
+            'win32': 'chrome.exe',
+            'linux': 'google-chrome'
+        },
         'progid': 'ChromeHTML',
         'chromium': True,
-        'app_path': 'ProgramFiles/Google/Chrome/Application/chrome.exe',
-        'local_path': 'LOCALAPPDATA/Google/Chrome/User Data/Default',
-        'os_support': ['win32']
+        'app_path': {
+            'win32': 'ProgramFiles/Google/Chrome/Application/chrome.exe',
+            'linux': 'HOME/usr/bin/google-chrome-stable'
+        },
+        'local_path': {
+            'win32': 'LOCALAPPDATA/Google/Chrome/User Data/Default',
+            'linux': 'HOME/.config/google-chrome/Default'
+        },
+        'os_support': ['win32', 'linux']
     },
     {
         'name': 'Firefox',
         'fullname': 'Mozilla Firefox',
-        'process': 'firefox.exe',
+        'process': {
+            'win32': 'firefox.exe',
+            'linux': 'firefox'
+        },
         'progid': 'FirefoxHTML',
         'chromium': False,
-        'app_path': 'ProgramFiles/Mozilla Firefox/firefox.exe',
-        'local_path': 'APPDATA/Mozilla/Firefox',
+        'app_path': {
+            'win32': 'ProgramFiles/Mozilla Firefox/firefox.exe',
+            'linux': 'HOME/usr/bin/firefox'
+        },
+        'local_path': {
+            'win32': 'APPDATA/Mozilla/Firefox',
+            'linux': 'HOME/.mozilla/firefox'
+        },
         'os_support': ['win32', 'linux']
     },
     {
