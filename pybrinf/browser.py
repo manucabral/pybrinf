@@ -32,14 +32,14 @@ class Browser:
             chromium (bool): Whether the browser is a chromium based browser.
     '''
 
-    def __init__(self, os: str, **kwargs):
+    def __init__(self, os_: str, **kwargs):
         '''Initialize the Browser instance.'''
-        self.__os = os
+        self.__os = os_
         self.__name = kwargs.get('name', None)
         self.__fullname = kwargs.get('fullname', None)
-        self.__app_path = kwargs.get('app_path', None)[os]
-        self.__local_path = kwargs.get('local_path', None)[os]
-        self.__process = kwargs.get('process', None)[os]
+        self.__app_path = kwargs.get('app_path', None)[os_]
+        self.__local_path = kwargs.get('local_path', None)[os_]
+        self.__process = kwargs.get('process', None)[os_]
         self.__chromium = kwargs.get('chromium', None)
 
     def __str__(self):
@@ -109,19 +109,20 @@ class Browser:
                     raise BrowserError(
                         'Error while getting the browser version.')
                 return output.decode('utf-8').split().pop().strip()
-            elif self.__os == 'windows':
-                # TODO: a better way
-                path = self.app_path.split('/')[:-1]
-                files = os.listdir('/'.join(path))
-                for file in files:
-                    if re.match(r'\d+\.\d+\.\d+\.\d+', file):
-                        return file
-                # no chromium based browser
-                res = subprocess.check_output([self.app_path, '--version'])
-                return res.decode('utf-8').rsplit(' ', maxsplit=1)[-1]
+
+            # TODO: a better way
+            path = self.app_path.split('/')[:-1]
+            files = os.listdir('/'.join(path))
+            for file in files:
+                if re.match(r'\d+\.\d+\.\d+\.\d+', file):
+                    return file
+            # no chromium based browser
+            res = subprocess.check_output([self.app_path, '--version'])
+            return res.decode('utf-8').rsplit(' ', maxsplit=1)[-1]
         except Exception as exc:
             raise BrowserError(
                 'Unknown error while getting the browser version.') from exc
+        return None
 
     @property
     def path(self) -> str:
