@@ -11,7 +11,8 @@ BROWSERS = [
         'progid': 'ChromeHTML',
         'chromium': True,
         'app_path': 'ProgramFiles/Google/Chrome/Application/chrome.exe',
-        'local_path': 'LOCALAPPDATA/Google/Chrome/User Data/Default'
+        'local_path': 'LOCALAPPDATA/Google/Chrome/User Data/Default',
+        'os_support': ['win32']
     },
     {
         'name': 'Firefox',
@@ -20,7 +21,8 @@ BROWSERS = [
         'progid': 'FirefoxHTML',
         'chromium': False,
         'app_path': 'ProgramFiles/Mozilla Firefox/firefox.exe',
-        'local_path': 'APPDATA/Mozilla/Firefox'
+        'local_path': 'APPDATA/Mozilla/Firefox',
+        'os_support': ['win32', 'linux']
     },
     {
         'name': 'Edge',
@@ -29,7 +31,8 @@ BROWSERS = [
         'progid': 'EdgeHTML',
         'chromium': True,
         'app_path': 'ProgramFiles(x86)/Microsoft/Edge/Application/msedge.exe',
-        'local_path': 'LOCALAPPDATA/Microsoft/Edge/User Data/Default'
+        'local_path': 'LOCALAPPDATA/Microsoft/Edge/User Data/Default',
+        'os_support': ['win32']
     },
     {
         'name': 'Yandex',
@@ -38,7 +41,8 @@ BROWSERS = [
         'chromium': True,
         'progid': 'YandexHTML',
         'app_path': 'LOCALAPPDATA/Yandex/YandexBrowser/Application/browser.exe',
-        'local_path': 'LOCALAPPDATA/Yandex/YandexBrowser/User Data/Default'
+        'local_path': 'LOCALAPPDATA/Yandex/YandexBrowser/User Data/Default',
+        'os_support': ['win32']
     },
     {
         'name': 'Opera',
@@ -47,7 +51,8 @@ BROWSERS = [
         'chromium': True,
         'progid': 'OperaHTML',
         'app_path': 'LOCALAPPDATA/Programs/Opera/launcher.exe',
-        'local_path': 'APPDATA/Opera Software/Opera Stable'
+        'local_path': 'APPDATA/Opera Software/Opera Stable',
+        'os_support': ['win32']
     },
     {
         'name': 'Brave',
@@ -56,7 +61,8 @@ BROWSERS = [
         'chromium': True,
         'progid': 'BraveHTML',
         'app_path': 'ProgramFiles/BraveSoftware/Brave-Browser/Application/brave.exe',
-        'local_path': 'LOCALAPPDATA/BraveSoftware/Brave-Browser/User Data/Default'
+        'local_path': 'LOCALAPPDATA/BraveSoftware/Brave-Browser/User Data/Default',
+        'os_support': ['win32']
     },
     {
         'name': 'Vivaldi',
@@ -65,6 +71,7 @@ BROWSERS = [
         'chromium': True,
         'progid': 'VivaldiHTML',
         'app_path': 'LOCALAPPDATA/Vivaldi/Application/vivaldi.exe',
-        'local_path': 'LOCALAPPDATA/Vivaldi/User Data/Default'
+        'local_path': 'LOCALAPPDATA/Vivaldi/User Data/Default',
+        'os_support': ['win32']
     }
 ]

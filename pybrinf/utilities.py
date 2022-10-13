@@ -1,6 +1,6 @@
 '''
 This module contains all utility functions used in PyBrinf.
-TODO: Add linux and macos support.
+TODO: Add linux and macos complete support.
 '''
 
 import sys
@@ -14,12 +14,14 @@ from pybrinf.queries import (
     WEBSITE_QUERY,
 )
 
+
 class Utilities:
     '''Utilities class for PyBrinf.'''
 
     BROWSERS = BROWSERS
-    SUPPORTED_SYSTEMS = ['win32']
-    SUPPORTED_BROWSERS = ['chrome', 'edge', 'yandex', 'firefox', 'opera', 'brave', 'vivaldi']
+    SUPPORTED_SYSTEMS = ['win32', 'linux']
+    SUPPORTED_BROWSERS = ['chrome', 'edge', 'yandex',
+                          'firefox', 'opera', 'brave', 'vivaldi']
     DEFAULT_BROWSER_KEY = \
         'Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice'
 
