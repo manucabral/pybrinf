@@ -8,8 +8,10 @@ Docstrings are written in Google style.
 import re
 import os
 import subprocess
+import urllib.request
+import json
 
-from pybrinf.item import Downloaded, History
+from pybrinf.item import Downloaded, History, Tab
 from pybrinf.database import Database
 from pybrinf.utilities import Utilities
 from pybrinf.session import Session
@@ -358,3 +360,29 @@ class Browser:
         history = [History(self.fullname, *history) for history in result]
         db_history.close()
         return history
+
+    def tabs(self) -> list[Tab]:
+        '''
+        Get the list of tabs from the browser in dev tools mode.
+
+        Raises:
+            BrowserError: If the browser is not installed or not supported.
+        Returns:
+            list: The list of tabs.
+        '''
+        if not self.installed:
+            raise BrowserError('The browser is not installed.')
+        if not self.__chromium:
+            raise BrowserError('Only chromium based browsers are supported.')
+        if not self.dev_tools:
+            raise BrowserError('The browser is not in dev tools mode. Please enable it.')
+        tabs = []
+        try:
+            response = urllib.request.urlopen('http://localhost:9222/json')
+            data = json.loads(response.read())
+            for tab_data in data:
+                if tab_data['type'] == 'page':
+                    tabs.append(Tab(browser=self.fullname, **tab_data))
+            return tabs
+        except Exception as exc:
+            raise BrowserError('Error while getting the tabs.') from exc
