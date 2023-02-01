@@ -32,6 +32,7 @@ class Browser:
             chromium (bool): Whether the browser is a chromium based browser.
     '''
 
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, os_: str, **kwargs):
         '''Initialize the Browser instance.'''
         self.__os = os_
@@ -41,6 +42,7 @@ class Browser:
         self.__local_path = kwargs.get('local_path', None)[os_]
         self.__process = kwargs.get('process', None)[os_]
         self.__chromium = kwargs.get('chromium', None)
+        self.__dev_tools = False
 
     def __str__(self):
         '''Get the string representation of the browser.'''
@@ -166,6 +168,32 @@ class Browser:
             raise BrowserError('Error while getting the app path.') from exc
 
     @property
+    def dev_tools(self) -> bool:
+        '''
+            Get the dev tools status of the browser.
+
+            Returns:
+                bool: True if the dev tools are enabled, False otherwise.
+        '''
+        return self.__dev_tools
+
+    @dev_tools.setter
+    def dev_tools(self, value: bool) -> None:
+        '''
+            Set the dev tools status of the browser.
+
+            Args:
+                value (bool): The value to define.
+            Raises:
+                TypeError: If the value is not a boolean.
+        '''
+        if not isinstance(value, bool):
+            raise TypeError('The value must be a boolean.')
+        if not self.__chromium:
+            raise BrowserError('Dev tools are only available for chromium based browsers. Sorry')
+        self.__dev_tools = value
+
+    @property
     def installed(self) -> bool:
         '''
         Check if the browser is installed.
@@ -207,9 +235,31 @@ class Browser:
         '''
         self.__local_path = path
 
-    def open(self, url: str) -> True:
+    def open(self) -> bool:
         '''
-        Open the url in the browser.
+        Open a new instance of the browser.
+
+        Raises:
+            BrowserError: If the browser is not installed or if it is already running.
+        Returns:
+            bool: True if the browser is opened, False otherwise.
+        '''
+        if not self.installed:
+            raise BrowserError('The browser is not installed.')
+        if self.running:
+            raise BrowserError('The browser is already running. Please close it first.')
+        try:
+            args = [self.app_path, '--remote-debugging-port=9222'] if self.dev_tools \
+                else [self.app_path]
+            subprocess.Popen(args)
+            return True
+        except Exception as exc:
+            raise BrowserError('Error while opening the browser.') from exc
+        return False
+
+    def open_url(self, url: str) -> True:
+        '''
+        Open a url in the browser without using dev tools.
 
         Args:
             url (str): The url to open.
@@ -229,10 +279,10 @@ class Browser:
 
     def session(self) -> Session:
         '''
-            Get the last session of the browser.
+        Get the last session of the browser.
 
-            Raises:
-                BrowserError: If the browser is not installed or not supported.
+        Raises:
+            BrowserError: If the browser is not installed or not supported.
         '''
         if not self.installed:
             raise BrowserError('The browser is not installed.')
