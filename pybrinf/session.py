@@ -8,7 +8,7 @@ import os
 
 from pybrinf.parser import Parser
 from pybrinf.exceptions import SessionError
-from pybrinf.item import Tab
+from pybrinf.item import SessionTab
 from pybrinf.commands import CommandType
 
 
@@ -67,7 +67,7 @@ class Session:
         '''
         return self.__last
 
-    def __parse_tabs(self, *args) -> list[Tab]:
+    def __parse_tabs(self, *args) -> list[SessionTab]:
         '''
         Parse the tab from the UpdateTabNavigation commands and return a list of Tab objects.
         More friendly to use than the CommandTabNavigation object.
@@ -84,7 +84,7 @@ class Session:
         pinned_states = args[1]
         selected_tab = args[2]
         for command in tab_navigations:
-            tab = Tab(self.browser, command.tab_id,
+            tab = SessionTab(self.browser, command.tab_id,
                       command.index, command.url, command.title)
             for pinned_state in pinned_states:
                 tab.pinned = pinned_state.tab_id == command.tab_id
@@ -92,7 +92,7 @@ class Session:
             tabs.append(tab)
         return tabs
 
-    def __remove_repeated_tabs(self, tabs: list[Tab]) -> list[Tab]:
+    def __remove_repeated_tabs(self, tabs: list[SessionTab]) -> list[SessionTab]:
         '''
         Remove repeated tabs from the list of tabs
 
@@ -108,7 +108,7 @@ class Session:
                 new_tabs.append(tab)
         return new_tabs
 
-    def tabs(self) -> list[Tab]:
+    def tabs(self) -> list[SessionTab]:
         '''
         Get all tabs from the last Session file
 
@@ -128,7 +128,7 @@ class Session:
         return self.__remove_repeated_tabs(tabs)
 
     @property
-    def current_tab(self) -> Tab:
+    def current_tab(self) -> SessionTab:
         '''
         Get the current tab from the last Session file
 
