@@ -84,8 +84,8 @@ class History(Item):
         '''Check if the tab is from a specific domain.'''
         return domain in self.url
 
-class Tab(Item):
-    '''Simulates a tab.'''
+class SessionTab(Item):
+    '''Simulates a tab from a session.'''
 
     def __init__(self, *args):
         '''Initialize the Tab instance.'''
@@ -106,3 +106,14 @@ class Tab(Item):
     def is_active(self) -> bool:
         '''Check if the tab is active.'''
         return self.active
+
+class Tab(Item):
+    '''Simulates a tab from devtools.'''
+
+    # pylint: disable=too-few-public-methods
+    def __init__(self, browser: str, **kwargs):
+        super().__init__(browser)
+        self.__dict__.update(kwargs)
+
+    def __repr__(self) -> str:
+        return f'<Tab {self.id} {self.browser}>'
