@@ -62,7 +62,7 @@ Use another installed browser
 opera = brinf.browser('opera')
 ```
 
-Check out the [wiki](https://github.com/manucabral/pybrinf/wiki) for more details.
+And more! Check out the [wiki](https://github.com/manucabral/pybrinf/wiki) for more details.
 
 ### Constributions
 All constributions, bug reports or fixes and ideas are welcome.
