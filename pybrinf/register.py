@@ -54,5 +54,3 @@ class Register:
             return winreg.QueryValueEx(key, value)[0]
         except FileNotFoundError as exc:
             raise FileNotFoundError(f'Value {value} not found') from exc
-        except Exception as exc:
-            raise Exception(f'An unknown error occurred: {exc}') from exc
