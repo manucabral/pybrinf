@@ -10,7 +10,7 @@ from pybrinf.utilities import Utilities
 if Utilities.system() == 'win32':
     import winreg
 else:
-    raise BrinfError('This module only works on Windows.')
+    raise BrinfError('This module is only compatible with Windows') from None
 
 class Register:
     '''Register class core'''
